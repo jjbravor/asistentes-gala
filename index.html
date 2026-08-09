@@ -1,117 +1,130 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Asistentes</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; display: flex; justify-content: center; }
-        .form-container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
-        h2 { margin-bottom: 20px; color: #333; text-align: center; }
-        label { font-weight: bold; display: block; margin-top: 10px; color: #555; }
-        input, textarea, select { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        textarea { height: 80px; resize: vertical; }
-        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; }
-        button:hover { background-color: #218838; }
-        button:disabled { background-color: #cccccc; cursor: not-allowed; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Registro</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f4f9; color: #333; }
+    .form-container { max-width: 450px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    select, input, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    button { background-color: #28a745; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-size: 16px; cursor: pointer; }
+    button:disabled { background-color: #cccccc; cursor: not-allowed; }
+    .status-msg { margin-top: 15px; font-weight: bold; text-align: center; }
+  </style>
 </head>
 <body>
 
-<div class="form-container">
-    <h2>Inscripción de Asistentes</h2>
-    <form id="asistenteForm">
-        
-        <label for="titular">Nombre del Titular (Clave de validación):</label>
-        <input type="text" id="titular" required placeholder="Ej: Juan">
-        
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-        
-        <label for="asistente">Nombre Completo del Asistente:</label>
-        <input type="text" id="asistente" required placeholder="Ej: Juan Bravo o María José">
-        
-        <label for="rut">RUT (con puntos y guion):</label>
-        <input type="text" id="rut" required placeholder="Ej: 12.345.678-9">
-        
-        <div style="display: flex; gap: 15px;">
-            <div style="flex: 1;">
-                <label for="fechaNac">Fecha de Nac.:</label>
-                <input type="date" id="fechaNac" required>
-            </div>
-            <div style="flex: 1;">
-                <label for="edad">Edad:</label>
-                <input type="number" id="edad" required min="0" placeholder="Ej: 28">
-            </div>
-        </div>
-        
-        <label for="restriccion">Restricción Alimentaria:</label>
-        <select id="restriccion" required>
-            <option value="Ninguna">Ninguna</option>
-            <option value="Vegano">Vegano/a</option>
-            <option value="Vegetariano">Vegetariano/a</option>
-            <option value="Celiaco (Sin Gluten)">Celíaco (Sin Gluten)</option>
-            <option value="Intolerante Lactosa">Intolerante a la Lactosa</option>
-            <option value="Otro">Otro (Especificar en observaciones)</option>
+  <div class="form-container">
+    <h2>Registro de Datos (Hoja2)</h2>
+    
+    <form id="formularioRegistro">
+      
+      <!-- COMBO TRAÍDO DE HOJA1 -->
+      <div class="form-group">
+        <label for="titular">Nombre del Titular:</label>
+        <select id="titular" required>
+          <option value="">Cargando lista de asistentes...</option>
         </select>
-        
-        <label for="observaciones">Observaciones:</label>
-        <textarea id="observaciones" placeholder="Detalles adicionales o alergias específicas..."></textarea>
-        
-        <button type="submit" id="submitBtn">Registrar Asistente</button>
+      </div>
+
+      <!-- CAMPOS EXTRA DE EJEMPLO -->
+      <div class="form-group">
+        <label for="campoExtra1">Detalle o Motivo:</label>
+        <input type="text" id="campoExtra1" placeholder="Ej. Pago de cuota, entrega de kit..." required>
+      </div>
+
+      <div class="form-group">
+        <label for="campoExtra2">Monto / Observación:</label>
+        <textarea id="campoExtra2" rows="3" placeholder="Comentarios adicionales..."></textarea>
+      </div>
+
+      <button type="submit" id="btnEnviar" disabled>Guardar Registro</button>
     </form>
-</div>
 
-<script>
-    // REEMPLAZA ESTA URL CON TU URL DE APLICACIÓN WEB DE GOOGLE APPS SCRIPT
-    const url = "TU_URL_DE_APPS_SCRIPT_AQUI"; 
+    <div id="mensaje" class="status-msg"></div>
+  </div>
 
-    document.getElementById("asistenteForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-        
-        const btn = document.getElementById("submitBtn");
-        btn.disabled = true;
-        btn.innerText = "Validando y Guardando...";
+  <script>
+    // ⚠️ REEMPLAZA ESTA URL CON LA QUE TE DIO GOOGLE APPS SCRIPT AL IMPLEMENTAR (Termina en /exec)
+    const WEB_APP_URL = "https://google.com";
 
-        const data = {
-            titular: document.getElementById("titular").value,
-            asistente: document.getElementById("asistente").value,
-            rut: document.getElementById("rut").value,
-            fechaNac: document.getElementById("fechaNac").value,
-            edad: document.getElementById("edad").value,
-            restriccion: document.getElementById("restriccion").value,
-            observaciones: document.getElementById("observaciones").value || "Ninguna"
-        };
+    const selectTitular = document.getElementById('titular');
+    const form = document.getElementById('formularioRegistro');
+    const btnEnviar = document.getElementById('btnEnviar');
+    const mensajeDiv = document.getElementById('mensaje');
 
-        fetch(url, {
-            method: "POST",
-            mode: "cors",
-            body: JSON.stringify(data)
-        })
-        .then(res => res.json())
-        .then(response => {
-            if(response.result === "success") {
-                alert("¡Asistente registrado con éxito!");
-                // Limpia el formulario manteniendo el titular por si añade otro asistente
-                document.getElementById("asistente").value = "";
-                document.getElementById("rut").value = "";
-                document.getElementById("fechaNac").value = "";
-                document.getElementById("edad").value = "";
-                document.getElementById("restriccion").value = "Ninguna";
-                document.getElementById("observaciones").value = "";
-            } else {
-                alert("Error: " + response.message);
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("Error de red o de permisos al conectar con el servidor.");
-        })
-        .finally(() => {
-            btn.disabled = false;
-            btn.innerText = "Registrar Asistente";
+    // 1. CARGAR ASISTENTES DESDE HOJA1 AL ENTRAR A LA PÁGINA
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const respuesta = await fetch(WEB_APP_URL);
+        const datos = await respuesta.json();
+
+        if (datos.error) throw new Error(datos.error);
+
+        // Limpiar el select
+        selectTitular.innerHTML = '<option value="">-- Seleccione un Asistente --</option>';
+
+        // Inyectar los nombres traídos de la Hoja1 al combo
+        datos.asistentes.forEach(nombre => {
+          const option = document.createElement('option');
+          option.value = nombre;
+          option.textContent = nombre;
+          selectTitular.appendChild(option);
         });
-    });
-</script>
 
+        // Habilitar el botón una vez que el combo esté listo
+        btnEnviar.disabled = false;
+
+      } catch (error) {
+        console.error("Error al cargar asistentes:", error);
+        selectTitular.innerHTML = '<option value="">Error al cargar la lista</option>';
+        mensajeDiv.textContent = "Error de conexión con la base de datos.";
+        mensajeDiv.style.color = "red";
+      }
+    });
+
+    // 2. ENVIAR LOS DATOS DEL FORMULARIO A LA HOJA2
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); // Evita que la página se recargue
+
+      btnEnviar.disabled = true;
+      mensajeDiv.textContent = "Guardando datos...";
+      mensajeDiv.style.color = "#333";
+
+      // Capturar los valores del formulario
+      const payload = {
+        titular: selectTitular.value,
+        campoExtra1: document.getElementById('campoExtra1').value,
+        campoExtra2: document.getElementById('campoExtra2').value
+      };
+
+      try {
+        // Al usar Apps Script externo, enviamos los datos en formato texto plano de JSON
+        const respuesta = await fetch(WEB_APP_URL, {
+          method: "POST",
+          mode: "no-cors", // Requerido por las limitaciones de redirección de Google Script
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        // Nota: Debido a "no-cors", la respuesta web vendrá opaca (no se puede leer el JSON directamente),
+        // pero si entra al bloque 'try', significa que la red envió los datos con éxito a la Hoja2.
+        
+        mensajeDiv.textContent = "¡Datos guardados con éxito en la Hoja2!";
+        mensajeDiv.style.color = "green";
+        form.reset(); // Limpia los campos para un nuevo ingreso
+
+      } catch (error) {
+        console.error("Error al guardar:", error);
+        mensajeDiv.textContent = "Ocurrió un error al intentar guardar.";
+        mensajeDiv.style.color = "red";
+      } finally {
+        btnEnviar.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>
