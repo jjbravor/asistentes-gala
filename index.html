@@ -49,7 +49,7 @@
 
   <script>
     // ⚠️ REEMPLAZA ESTA URL CON LA QUE TE DIO GOOGLE APPS SCRIPT AL IMPLEMENTAR (Termina en /exec)
-    const WEB_APP_URL = "https://google.com";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbztyOlLO0PjaJKXLhN5mhbrBkVRuDFIpCRz27UtKcx3EInryKrTeRbKnMzO17dY-LbeKg/exec";
 
     const selectTitular = document.getElementById('titular');
     const form = document.getElementById('formularioRegistro');
@@ -97,8 +97,14 @@
       // Capturar los valores del formulario
       const payload = {
         titular: selectTitular.value,
-        campoExtra1: document.getElementById('campoExtra1').value,
-        campoExtra2: document.getElementById('campoExtra2').value
+        campoExtra1: document.getElementById('titular').value,
+        campoExtra2: document.getElementById('nombreasistente').value,
+        campoExtra2: document.getElementById('rut').value,
+        campoExtra2: document.getElementById('fechanacimiento').value,
+        campoExtra2: document.getElementById('edad').value,
+        campoExtra2: document.getElementById('restriccionalimentaria').value,
+        campoExtra2: document.getElementById('observaciones').value,
+      
       };
 
       try {
