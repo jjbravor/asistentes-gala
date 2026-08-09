@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulario de Registro</title>
+  <title>Formulario de Asistentes</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f4f9; color: #333; }
-    .form-container { max-width: 450px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f9; }
+    .form-container { max-width: 500px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin: auto; }
     .form-group { margin-bottom: 15px; }
-    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
     select, input, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-    button { background-color: #28a745; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-size: 16px; cursor: pointer; }
+    button { background-color: #007bff; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; }
     button:disabled { background-color: #cccccc; cursor: not-allowed; }
     .status-msg { margin-top: 15px; font-weight: bold; text-align: center; }
   </style>
@@ -18,27 +18,44 @@
 <body>
 
   <div class="form-container">
-    <h2>Registro de Datos (Hoja2)</h2>
-    
+    <h2>Registro de Asistentes</h2>
     <form id="formularioRegistro">
       
-      <!-- COMBO TRAÍDO DE HOJA1 -->
       <div class="form-group">
-        <label for="titular">Nombre del Titular:</label>
+        <label for="titular">Titular (Combo Hoja1):</label>
         <select id="titular" required>
-          <option value="">Cargando lista de asistentes...</option>
+          <option value="">Cargando lista...</option>
         </select>
       </div>
 
-      <!-- CAMPOS EXTRA DE EJEMPLO -->
       <div class="form-group">
-        <label for="campoExtra1">Detalle o Motivo:</label>
-        <input type="text" id="campoExtra1" placeholder="Ej. Pago de cuota, entrega de kit..." required>
+        <label for="nombreasistente">Nombre del Asistente:</label>
+        <input type="text" id="nombreasistente" required placeholder="Nombre completo">
       </div>
 
       <div class="form-group">
-        <label for="campoExtra2">Monto / Observación:</label>
-        <textarea id="campoExtra2" rows="3" placeholder="Comentarios adicionales..."></textarea>
+        <label for="rut">RUT:</label>
+        <input type="text" id="rut" required placeholder="12.345.678-9">
+      </div>
+
+      <div class="form-group">
+        <label for="fechanacimiento">Fecha de Nacimiento:</label>
+        <input type="date" id="fechanacimiento" required>
+      </div>
+
+      <div class="form-group">
+        <label for="edad">Edad:</label>
+        <input type="number" id="edad" required min="0" max="120" placeholder="Años">
+      </div>
+
+      <div class="form-group">
+        <label for="restriccionalimentaria">Restricción Alimentaria:</label>
+        <input type="text" id="restriccionalimentaria" placeholder="Ej: Ninguna, Vegano, Celíaco">
+      </div>
+
+      <div class="form-group">
+        <label for="observaciones">Observaciones:</label>
+        <textarea id="observaciones" rows="3" placeholder="Detalles adicionales..."></textarea>
       </div>
 
       <button type="submit" id="btnEnviar" disabled>Guardar Registro</button>
@@ -48,84 +65,66 @@
   </div>
 
   <script>
-    // ⚠️ REEMPLAZA ESTA URL CON LA QUE TE DIO GOOGLE APPS SCRIPT AL IMPLEMENTAR (Termina en /exec)
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbztyOlLO0PjaJKXLhN5mhbrBkVRuDFIpCRz27UtKcx3EInryKrTeRbKnMzO17dY-LbeKg/exec";
+    // ⚠️ REEMPLAZA CON TU NUEVA URL DE APPS SCRIPT
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyqh7bh8xe1EwF21V8O5sDUDRSSAm3JT6Ym1mcE3M0XwesPCx9V2nMxZIkcyal5ClxH/exec";
 
     const selectTitular = document.getElementById('titular');
     const form = document.getElementById('formularioRegistro');
     const btnEnviar = document.getElementById('btnEnviar');
     const mensajeDiv = document.getElementById('mensaje');
 
-    // 1. CARGAR ASISTENTES DESDE HOJA1 AL ENTRAR A LA PÁGINA
+    // 1. CARGAR TITULARES AL INICIAR
     window.addEventListener('DOMContentLoaded', async () => {
       try {
         const respuesta = await fetch(WEB_APP_URL);
         const datos = await respuesta.json();
-
         if (datos.error) throw new Error(datos.error);
 
-        // Limpiar el select
-        selectTitular.innerHTML = '<option value="">-- Seleccione un Asistente --</option>';
-
-        // Inyectar los nombres traídos de la Hoja1 al combo
+        selectTitular.innerHTML = '<option value="">-- Seleccione un Titular --</option>';
         datos.asistentes.forEach(nombre => {
           const option = document.createElement('option');
           option.value = nombre;
           option.textContent = nombre;
           selectTitular.appendChild(option);
         });
-
-        // Habilitar el botón una vez que el combo esté listo
         btnEnviar.disabled = false;
-
       } catch (error) {
-        console.error("Error al cargar asistentes:", error);
         selectTitular.innerHTML = '<option value="">Error al cargar la lista</option>';
-        mensajeDiv.textContent = "Error de conexión con la base de datos.";
+        mensajeDiv.textContent = "Error de conexión con la planilla.";
         mensajeDiv.style.color = "red";
       }
     });
 
-    // 2. ENVIAR LOS DATOS DEL FORMULARIO A LA HOJA2
+    // 2. ENVIAR DATOS A LA HOJA2
     form.addEventListener('submit', async (e) => {
-      e.preventDefault(); // Evita que la página se recargue
-
+      e.preventDefault();
       btnEnviar.disabled = true;
-      mensajeDiv.textContent = "Guardando datos...";
+      mensajeDiv.textContent = "Enviando registro...";
       mensajeDiv.style.color = "#333";
 
-      // Capturar los valores del formulario
       const payload = {
         titular: selectTitular.value,
-        campoExtra1: document.getElementById('titular').value,
-        campoExtra2: document.getElementById('nombreasistente').value,
-        campoExtra2: document.getElementById('rut').value,
-        campoExtra2: document.getElementById('fechanacimiento').value,
-        campoExtra2: document.getElementById('edad').value,
-        campoExtra2: document.getElementById('restriccionalimentaria').value,
-        campoExtra2: document.getElementById('observaciones').value,
-      
+        nombreasistente: document.getElementById('nombreasistente').value,
+        rut: document.getElementById('rut').value,
+        fechanacimiento: document.getElementById('fechanacimiento').value,
+        edad: parseInt(document.getElementById('edad').value),
+        restriccionalimentaria: document.getElementById('restriccionalimentaria').value,
+        observaciones: document.getElementById('observaciones').value
       };
 
       try {
-        // Al usar Apps Script externo, enviamos los datos en formato texto plano de JSON
-        const respuesta = await fetch(WEB_APP_URL, {
+        await fetch(WEB_APP_URL, {
           method: "POST",
-          mode: "no-cors", // Requerido por las limitaciones de redirección de Google Script
+          mode: "no-cors",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
 
-        // Nota: Debido a "no-cors", la respuesta web vendrá opaca (no se puede leer el JSON directamente),
-        // pero si entra al bloque 'try', significa que la red envió los datos con éxito a la Hoja2.
-        
-        mensajeDiv.textContent = "¡Datos guardados con éxito en la Hoja2!";
+        mensajeDiv.textContent = "¡Registro guardado con éxito en Hoja2!";
         mensajeDiv.style.color = "green";
-        form.reset(); // Limpia los campos para un nuevo ingreso
-
+        form.reset();
       } catch (error) {
-        console.error("Error al guardar:", error);
-        mensajeDiv.textContent = "Ocurrió un error al intentar guardar.";
+        mensajeDiv.textContent = "Error al intentar guardar.";
         mensajeDiv.style.color = "red";
       } finally {
         btnEnviar.disabled = false;
@@ -134,3 +133,4 @@
   </script>
 </body>
 </html>
+
