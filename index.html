@@ -103,40 +103,52 @@
     });
 
     // 2. ENVIAR DATOS A LA HOJA2
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      btnEnviar.disabled = true;
-      mensajeDiv.textContent = "Enviando registro...";
-      mensajeDiv.style.color = "#333";
+    // 2. ENVIAR DATOS A LA HOJA2
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  btnEnviar.disabled = true;
+  mensajeDiv.textContent = "Enviando registro...";
+  mensajeDiv.style.color = "#333";
 
-      const payload = {
-        titular: selectTitular.value,
-        nombreasistente: document.getElementById('nombreasistente').value,
-        rut: document.getElementById('rut').value,
-        fechanacimiento: document.getElementById('fechanacimiento').value,
-        edad: parseInt(document.getElementById('edad').value),
-        restriccionalimentaria: document.getElementById('restriccionalimentaria').value,
-        observaciones: document.getElementById('observaciones').value
-      };
+  // --- NUEVA CONVERSIÓN DE FECHA A DD/MM/AAAA ---
+  const fechaInput = document.getElementById('fechanacimiento').value; // Formato original: aaaa-mm-dd
+  let fechaFormateada = "";
+  
+  if (fechaInput) {
+    const partes = fechaInput.split("-"); // Divide el texto por los guiones
+    fechaFormateada = `${partes[2]}/${partes[1]}/${partes[0]}`; // Lo une como: dd/mm/aaaa
+  }
+  // ----------------------------------------------
 
-      try {
-        await fetch(WEB_APP_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
+  const payload = {
+    titular: selectTitular.value,
+    nombreasistente: document.getElementById('nombreasistente').value,
+    rut: document.getElementById('rut').value,
+    fechanacimiento: fechaFormateada, // Enviamos el formato correcto modificado
+    edad: parseInt(document.getElementById('edad').value),
+    restriccionalimentaria: document.getElementById('restriccionalimentaria').value,
+    observaciones: document.getElementById('observaciones').value
+  };
 
-        mensajeDiv.textContent = "¡Registro guardado con éxito en Hoja2!";
-        mensajeDiv.style.color = "green";
-        form.reset();
-      } catch (error) {
-        mensajeDiv.textContent = "Error al intentar guardar.";
-        mensajeDiv.style.color = "red";
-      } finally {
-        btnEnviar.disabled = false;
-      }
+  try {
+    await fetch(WEB_APP_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     });
+
+    mensajeDiv.textContent = "¡Registro guardado con éxito en Hoja2!";
+    mensajeDiv.style.color = "green";
+    form.reset();
+  } catch (error) {
+    mensajeDiv.textContent = "Error al intentar guardar.";
+    mensajeDiv.style.color = "red";
+  } finally {
+    btnEnviar.disabled = false;
+  }
+});
+
   </script>
 </body>
 </html>
