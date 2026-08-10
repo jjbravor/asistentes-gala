@@ -148,11 +148,11 @@
   <script src="https://jquery.com"></script>
   <script src="https://datatables.net"></script>
 
-
-  <script>
-    // ⚠️ REEMPLAZA ESTA URL CON TU ENLACE ACTIVO DE APPS SCRIPT (/exec)
+   <script>
+    // 🔗 CONFIGURACIÓN GLOBAL: Pega aquí la URL de tu Google Apps Script (/exec)
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwHt7duhIvgkBgATzfuc7lkdq0HwYahFtLUmNzXxMOnPOdT-CHdHhqmuOtmacz8YwAi/exec";
 
+    // --- No necesitas modificar nada hacia abajo ---
     const vistaPrincipal = document.getElementById('vistaPrincipal');
     const vistaFormulario = document.getElementById('vistaFormulario');
     const modalInvitados = document.getElementById('modalInvitados');
@@ -196,9 +196,9 @@
 
     function calcularEdadAutomatica(fechaTexto) {
       const partes = fechaTexto.split('/');
-      const dia = parseInt(partes, 10);
-      const mes = parseInt(partes, 10) - 1;
-      const ano = parseInt(partes, 10);
+      const dia = parseInt(partes[0], 10);
+      const mes = parseInt(partes[1], 10) - 1;
+      const ano = parseInt(partes[2], 10);
       if (isNaN(dia) || isNaN(mes) || isNaN(ano) || ano < 1900 || mes > 11 || dia > 31) return;
       
       const hoy = new Date();
@@ -253,7 +253,7 @@
         cargaPrincipal.classList.add('hidden');
         contenedorTabla.classList.remove('hidden');
 
-        // Inicialización de DataTable con corrección de anchos
+        // Inicialización nativa y limpia de DataTable
         tablaDT = $('#tablaTitulares').DataTable({
           pageLength: 10,
           lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
@@ -273,7 +273,6 @@
           }
         });
 
-        // Forzar recálculo inmediato de los contenedores
         setTimeout(() => {
           if (tablaDT) tablaDT.columns.adjust().draw();
         }, 150);
@@ -350,10 +349,14 @@
       }
     });
 
-    window.addEventListener('DOMContentLoaded', cargarPantallaPrincipal);
+    // CORRECCIÓN: Evento estándar y limpio para inicializar la aplicación sin errores
+    window.addEventListener('DOMContentLoaded', () => {
+      cargarPantallaPrincipal();
+    });
   </script>
 </body>
 </html>
+
 
 
   
