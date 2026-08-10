@@ -10,7 +10,7 @@
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 15px; background-color: #f4f6f9; color: #333; }
     
-    /* El contenedor principal ocupa hasta 1000px, pero en pantallas chicas usa el 95% del ancho */
+    /* El contenedor principal ocupa hasta 1000px y se adapta dinámicamente */
     .container { max-width: 1000px; width: 100%; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); margin: 15px auto; box-sizing: border-box; }
     .hidden { display: none !important; }
     .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f1f1f1; gap: 10px; }
@@ -26,10 +26,9 @@
     .btn-info:hover { background-color: #138496; }
     .acciones-td { display: flex; justify-content: flex-end; gap: 6px; }
     
-    /* 📱 MEJORA RESPONSIVE: Forzar ancho total y permitir scroll horizontal si es necesario */
+    /* 📱 ESTRUCTURA RESPONSIVE FORZADA AL 100% ANCHO REAL */
     #contenedorTabla { width: 100% !important; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; }
-    table.dataTable { width: 100% !important; margin: 0 !important; border-bottom: 1px solid #eef2f5 !important; }
-    .dataTables_wrapper { width: 100% !important; margin: 0 auto; }
+    table.dataTable, .dataTables_wrapper, .dataTables_scrollHead, .dataTables_scrollBody, .dataTables_scroll { width: 100% !important; clear: both; margin: 0 auto !important; }
     
     table.dataTable tbody th, table.dataTable tbody td { padding: 10px 12px !important; font-size: 13px; border-bottom: 1px solid #eef2f5; }
     table.dataTable thead th { background-color: #f8f9fa !important; color: #5a6c7d !important; font-weight: 600 !important; font-size: 11px !important; text-transform: uppercase; border-bottom: 1px solid #cbd5e0 !important; padding: 10px 12px !important; }
@@ -47,7 +46,6 @@
     .modal-content { background: white; padding: 20px; border-radius: 10px; max-width: 800px; width: 90%; max-height: 75vh; overflow-y: auto; box-sizing: border-box; }
     .status-msg { margin-top: 15px; font-weight: bold; text-align: center; font-size: 14px; }
     
-    /* Ajustes extra para pantallas muy pequeñas (Celulares) */
     @media (max-width: 480px) {
       body { padding: 5px; }
       .container { padding: 15px; border-radius: 8px; }
@@ -67,9 +65,8 @@
     
     <div id="cargaPrincipal" class="status-msg">Sincronizando con Google Sheets...</div>
     
-    <!-- El div contenedor ahora previene desbordamientos -->
     <div id="contenedorTabla" class="hidden">
-      <table id="tablaTitulares" class="display cell-border hover compact">
+      <table id="tablaTitulares" class="display cell-border hover compact" style="width:100%">
         <thead>
           <tr>
             <th>Nombre del Titular</th>
@@ -140,7 +137,7 @@
   <script src="https://jquery.com"></script>
   <script src="https://datatables.net"></script>
 
-    <script>
+  <script>
     // ⚠️ REEMPLAZA ESTA URL CON TU ENLACE ACTIVO DE APPS SCRIPT (/exec)
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwHt7duhIvgkBgATzfuc7lkdq0HwYahFtLUmNzXxMOnPOdT-CHdHhqmuOtmacz8YwAi/exec";
 
@@ -187,9 +184,9 @@
 
     function calcularEdadAutomatica(fechaTexto) {
       const partes = fechaTexto.split('/');
-      const dia = parseInt(partes[0], 10);
-      const mes = parseInt(partes[1], 10) - 1;
-      const ano = parseInt(partes[2], 10);
+      const dia = parseInt(partes, 10);
+      const mes = parseInt(partes, 10) - 1;
+      const ano = parseInt(partes, 10);
       if (isNaN(dia) || isNaN(mes) || isNaN(ano) || ano < 1900 || mes > 11 || dia > 31) return;
       
       const hoy = new Date();
@@ -221,7 +218,6 @@
         listaDatos.forEach(titular => {
           const fila = document.createElement('tr');
           const tieneInvitados = titular.cantidad > 0;
-          // SE REMOVIÓ EL MARCADOR DE NEGRITA EN EL NOMBRE DEL TITULAR
           fila.innerHTML = `
             <td>${titular.nombre}</td>
             <td style="text-align: center;"><span class="badge ${tieneInvitados ? '' : 'badge-vacio'}">${titular.cantidad}</span></td>
@@ -245,10 +241,12 @@
         cargaPrincipal.classList.add('hidden');
         contenedorTabla.classList.remove('hidden');
 
+        // Inicialización de DataTable con corrección de anchos
         tablaDT = $('#tablaTitulares').DataTable({
           pageLength: 10,
           lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
           destroy: true,
+          autoWidth: false, 
           language: {
             processing: "Procesando...",
             search: "Buscar titular:",
@@ -263,12 +261,17 @@
           }
         });
 
+        // Forzar recálculo inmediato de los contenedores
+        setTimeout(() => {
+          if (tablaDT) tablaDT.columns.adjust().draw();
+        }, 150);
+
       } catch (error) {
         cargaPrincipal.textContent = "Error de comunicación con el Apps Script.";
       }
     }
 
-    // VER DETALLE CON FORMATO DE FECHA DD/MM/YYYY (TEXTO NORMAL)
+    // VER DETALLE CON FORMATO DE FECHA DD/MM/YYYY
     async function verInvitados(nombreTitular) {
       document.getElementById('modalTitulo').innerHTML = `Invitados de: <span style="color:#007bff; font-weight:normal;">${nombreTitular}</span>`;
       const cuerpoModal = document.getElementById('cuerpoModal');
@@ -293,7 +296,6 @@
             if(partesIso.length === 3) fNacimientoStr = `${partesIso[2]}/${partesIso[1]}/${partesIso[0]}`;
           }
 
-          // SE REMOVIÓ EL MARCADOR DE NEGRITA EN EL NOMBRE DEL ASISTENTE
           htmlTabla += `<tr>
             <td>${inv.nombreasistente}<br><small style="color:#718096">Edad: ${inv.edad} años</small></td>
             <td><code>${fNacimientoStr}</code></td>
@@ -341,3 +343,5 @@
 </body>
 </html>
 
+
+  
