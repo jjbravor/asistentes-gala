@@ -9,14 +9,15 @@
   <link rel="stylesheet" href="https://datatables.net">
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 15px; background-color: #f4f6f9; color: #333; }
-    /* NUEVA CONFIGURACIÓN: Se amplió el ancho máximo de 750px a 1000px */
-    .container { max-width: 1000px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); margin: 15px auto; }
+    
+    /* El contenedor principal ocupa hasta 1000px, pero en pantallas chicas usa el 95% del ancho */
+    .container { max-width: 1000px; width: 100%; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); margin: 15px auto; box-sizing: border-box; }
     .hidden { display: none !important; }
-    .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f1f1f1; }
+    .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f1f1f1; gap: 10px; }
     h2 { margin: 0; color: #2c3e50; font-size: 18px; }
     
     /* Botones compactos */
-    .btn { padding: 6px 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 13px; transition: background 0.2s; display: inline-flex; align-items: center; gap: 5px; }
+    .btn { padding: 6px 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 13px; transition: background 0.2s; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
     .btn-main { background-color: #007bff; color: white; padding: 4px 8px; font-size: 12px; }
     .btn-main:hover { background-color: #0056b3; }
     .btn-success { background-color: #28a745; color: white; width: 100%; padding: 12px; font-size: 15px; justify-content: center; }
@@ -25,10 +26,14 @@
     .btn-info:hover { background-color: #138496; }
     .acciones-td { display: flex; justify-content: flex-end; gap: 6px; }
     
-    /* Personalización DataTable compacta */
-    table.dataTable { width: 100% !important; margin-top: 10px !important; border-bottom: 1px solid #eef2f5 !important; }
-    table.dataTable tbody th, table.dataTable tbody td { padding: 8px 10px !important; font-size: 13px; border-bottom: 1px solid #eef2f5; }
-    table.dataTable thead th { background-color: #f8f9fa !important; color: #5a6c7d !important; font-weight: 600 !important; font-size: 11px !important; text-transform: uppercase; border-bottom: 1px solid #cbd5e0 !important; }
+    /* 📱 MEJORA RESPONSIVE: Forzar ancho total y permitir scroll horizontal si es necesario */
+    #contenedorTabla { width: 100% !important; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; }
+    table.dataTable { width: 100% !important; margin: 0 !important; border-bottom: 1px solid #eef2f5 !important; }
+    .dataTables_wrapper { width: 100% !important; margin: 0 auto; }
+    
+    table.dataTable tbody th, table.dataTable tbody td { padding: 10px 12px !important; font-size: 13px; border-bottom: 1px solid #eef2f5; }
+    table.dataTable thead th { background-color: #f8f9fa !important; color: #5a6c7d !important; font-weight: 600 !important; font-size: 11px !important; text-transform: uppercase; border-bottom: 1px solid #cbd5e0 !important; padding: 10px 12px !important; }
+    
     .dataTables_wrapper .dataTables_filter input { padding: 5px 10px; border: 1px solid #cbd5e0; border-radius: 6px; margin-left: 8px; font-size: 13px; }
     .dataTables_wrapper .dataTables_length select { padding: 4px; border-radius: 4px; }
     
@@ -37,15 +42,24 @@
     .form-group { margin-bottom: 14px; }
     label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 13px; color: #4a5568; }
     select, input, textarea { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e0; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+    
     .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-    /* El modal de invitados también adopta el nuevo ancho cómodo */
-    .modal-content { background: white; padding: 20px; border-radius: 10px; max-width: 800px; width: 90%; max-height: 75vh; overflow-y: auto; }
+    .modal-content { background: white; padding: 20px; border-radius: 10px; max-width: 800px; width: 90%; max-height: 75vh; overflow-y: auto; box-sizing: border-box; }
     .status-msg { margin-top: 15px; font-weight: bold; text-align: center; font-size: 14px; }
+    
+    /* Ajustes extra para pantallas muy pequeñas (Celulares) */
+    @media (max-width: 480px) {
+      body { padding: 5px; }
+      .container { padding: 15px; border-radius: 8px; }
+      .header-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .dataTables_wrapper .dataTables_filter { float: none; text-align: left; margin-bottom: 10px; }
+      .dataTables_wrapper .dataTables_filter input { width: 100%; margin-left: 0; margin-top: 5px; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- PANTALLA 1: LISTADO PRINCIPAL CON DATATABLE -->
+  <!-- PANTALLA 1: LISTADO PRINCIPAL CON DATATABLE RESPONSIVE -->
   <div id="vistaPrincipal" class="container">
     <div class="header-row">
       <h2>Listado General de Titulares</h2>
@@ -53,8 +67,9 @@
     
     <div id="cargaPrincipal" class="status-msg">Sincronizando con Google Sheets...</div>
     
+    <!-- El div contenedor ahora previene desbordamientos -->
     <div id="contenedorTabla" class="hidden">
-      <table id="tablaTitulares" class="display">
+      <table id="tablaTitulares" class="display cell-border hover compact">
         <thead>
           <tr>
             <th>Nombre del Titular</th>
@@ -110,20 +125,21 @@
     <div id="mensajeForm" class="status-msg"></div>
   </div>
 
-  <!-- POP-UP FLOTANTE (DETALLE DE INVITADOS) -->
+  <!-- POP-UP FLOTANTE (DETALLE DE INVITADOS RESPONSIVE) -->
   <div id="modalInvitados" class="modal hidden">
     <div class="modal-content">
       <div class="header-row" style="border-bottom: 1px solid #eee; margin-bottom: 10px;">
         <h3 id="modalTitulo" style="margin:0; font-size:16px;">Invitados</h3>
         <button class="btn btn-secondary" id="btnCerrarModal" style="padding: 3px 8px;">Cerrar</button>
       </div>
-      <div id="cuerpoModal">Cargando...</div>
+      <div id="cuerpoModal" style="overflow-x: auto;">Cargando...</div>
     </div>
   </div>
 
   <!-- Scripts Obligatorios de jQuery y DataTables -->
   <script src="https://jquery.com"></script>
   <script src="https://datatables.net"></script>
+
     <script>
     // ⚠️ REEMPLAZA ESTA URL CON TU ENLACE ACTIVO DE APPS SCRIPT (/exec)
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwHt7duhIvgkBgATzfuc7lkdq0HwYahFtLUmNzXxMOnPOdT-CHdHhqmuOtmacz8YwAi/exec";
