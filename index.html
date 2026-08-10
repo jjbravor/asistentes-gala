@@ -6,23 +6,17 @@
   <title>Sistema de Gestión de Asistentes</title>
   
   <style>
-    /* Estilos Base de DataTables integrados de forma local */
-    table.dataTable{width:100%;margin:0 auto;clear:both;border-collapse:separate;border-spacing:0}
-    table.dataTable thead th,table.dataTable tfoot th{font-weight:bold}
-    table.dataTable thead th,table.dataTable thead td{padding:10px 18px;border-bottom:1px solid #111}
-    table.dataTable thead th:active,table.dataTable thead td:active{outline:none}
-    table.dataTable tbody tr{background-color:#fff}
-    table.dataTable tbody td{padding:8px 10px}
-    .dataTables_wrapper{position:relative;clear:both;*zoom:1;zoom:1}
-    .dataTables_wrapper .dataTables_length{float:left}
-    .dataTables_wrapper .dataTables_filter{float:right;text-align:right}
-    .dataTables_wrapper .dataTables_info{clear:both;float:left;padding-top:.755em}
-    .dataTables_wrapper .dataTables_paginate{float:right;text-align:right;padding-top:.25em}
-    .dataTables_wrapper .dataTables_paginate .paginate_button{box-sizing:border-box;display:inline-block;min-width:1.5em;padding:.5em 1em;margin-left:2px;text-align:center;text-decoration:none!important;cursor:pointer;color:#333!important;border:1px solid transparent;border-radius:2px}
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current{color:#333!important;border:1px solid #979797;background-color:white}
-    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled{cursor:default;color:#666!important;border:1px solid transparent;background:transparent;box-shadow:none}
-
-    /* Tu Diseño Personalizado y Adaptivo */
+    /* 🛠️ ESTILOS NATIVOS LOCALES DE DATATABLES (Inmunes a bloqueos de red) */
+    .dataTables_wrapper { position: relative; clear: both; margin: 15px 0 !important; width: 100% !important; font-size: 13px; }
+    .dataTables_length { float: left; margin-bottom: 15px; }
+    .dataTables_filter { float: right; text-align: right; margin-bottom: 15px; }
+    .dataTables_filter input { padding: 6px 10px; border: 1px solid #cbd5e0; border-radius: 6px; margin-left: 8px; font-size: 13px; }
+    .dataTables_length select { padding: 5px; border-radius: 4px; border: 1px solid #cbd5e0; }
+    table.dataTable { width: 100% !important; clear: both; border-collapse: collapse; margin: 0 auto !important; }
+    table.dataTable thead th { background-color: #f8f9fa !important; color: #5a6c7d !important; font-weight: 600 !important; font-size: 11px !important; text-transform: uppercase; border-bottom: 2px solid #cbd5e0 !important; padding: 10px 12px !important; text-align: left; }
+    table.dataTable tbody td { padding: 10px 12px !important; border-bottom: 1px solid #eef2f5; }
+    table.dataTable tbody tr:hover { background-color: #fafbfc; }
+        /* 🎨 DISEÑO AMPLIO (1000px) Y ADAPTATIVO */
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 15px; background-color: #f4f6f9; color: #333; }
     .container { max-width: 1000px; width: 100%; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); margin: 15px auto; box-sizing: border-box; }
     .hidden { display: none !important; }
@@ -39,14 +33,6 @@
     .acciones-td { display: flex; justify-content: flex-end; gap: 6px; }
     
     #contenedorTabla { width: 100% !important; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; }
-    table.dataTable, .dataTables_wrapper, .dataTables_scrollHead, .dataTables_scrollBody, .dataTables_scroll { width: 100% !important; clear: both; margin: 0 auto !important; }
-    
-    table.dataTable tbody th, table.dataTable tbody td { padding: 10px 12px !important; font-size: 13px; border-bottom: 1px solid #eef2f5; }
-    table.dataTable thead th { background-color: #f8f9fa !important; color: #5a6c7d !important; font-weight: 600 !important; font-size: 11px !important; text-transform: uppercase; border-bottom: 1px solid #cbd5e0 !important; padding: 10px 12px !important; }
-    
-    .dataTables_wrapper .dataTables_filter input { padding: 5px 10px; border: 1px solid #cbd5e0; border-radius: 6px; margin-left: 8px; font-size: 13px; }
-    .dataTables_wrapper .dataTables_length select { padding: 4px; border-radius: 4px; }
-    
     .badge { background-color: #007bff; color: white; padding: 2px 8px; border-radius: 50px; font-size: 11px; font-weight: bold; }
     .badge-vacio { background-color: #6c757d; }
     .form-group { margin-bottom: 14px; }
@@ -66,18 +52,36 @@
     }
   </style>
 </head>
-<body>
+  <body>
 
-  <!-- PANTALLA 1: LISTADO PRINCIPAL CON DATATABLE RESPONSIVE -->
+  <!-- PANTALLA 1: LISTADO PRINCIPAL -->
   <div id="vistaPrincipal" class="container">
     <div class="header-row">
       <h2>Listado General de Titulares</h2>
     </div>
     
+    <div style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+      <div>
+        <label style="display:inline-block; font-weight:normal; font-size:13px;">Mostrar 
+          <select id="controlLimite" style="width:auto; display:inline-block; padding: 4px;">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="-1">Todos</option>
+          </select> registros
+        </label>
+      </div>
+      <div>
+        <label style="font-weight:normal; font-size:13px;">Buscar titular: 
+          <input type="text" id="buscadorManual" style="width:200px; display:inline-block; padding: 5px 10px;" placeholder="Escribe para filtrar...">
+        </label>
+      </div>
+    </div>
+    
     <div id="cargaPrincipal" class="status-msg">Sincronizando con Google Sheets...</div>
     
     <div id="contenedorTabla" class="hidden">
-      <table id="tablaTitulares" class="display cell-border hover compact" style="width:100%">
+      <table id="tablaTitulares" class="dataTable">
         <thead>
           <tr>
             <th>Nombre del Titular</th>
@@ -87,6 +91,11 @@
         </thead>
         <tbody id="cuerpoTitulares"></tbody>
       </table>
+      
+      <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <div id="infoTabla" style="color: #718096; font-size: 13px;">Mostrando registros</div>
+        <div id="paginacionTabla" class="dataTables_paginate"></div>
+      </div>
     </div>
   </div>
 
@@ -133,7 +142,7 @@
     <div id="mensajeForm" class="status-msg"></div>
   </div>
 
-  <!-- POP-UP FLOTANTE (DETALLE DE INVITADOS RESPONSIVE) -->
+  <!-- POP-UP FLOTANTE -->
   <div id="modalInvitados" class="modal hidden">
     <div class="modal-content">
       <div class="header-row" style="border-bottom: 1px solid #eee; margin-bottom: 10px;">
@@ -143,16 +152,10 @@
       <div id="cuerpoModal" style="overflow-x: auto;">Cargando...</div>
     </div>
   </div>
-
-  <!-- Scripts Obligatorios de jQuery y DataTables -->
-  <script src="https://jquery.com"></script>
-  <script src="https://datatables.net"></script>
-
-   <script>
+      <script>
     // 🔗 CONFIGURACIÓN GLOBAL: Pega aquí la URL de tu Google Apps Script (/exec)
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwHt7duhIvgkBgATzfuc7lkdq0HwYahFtLUmNzXxMOnPOdT-CHdHhqmuOtmacz8YwAi/exec";
 
-    // --- No necesitas modificar nada hacia abajo ---
     const vistaPrincipal = document.getElementById('vistaPrincipal');
     const vistaFormulario = document.getElementById('vistaFormulario');
     const modalInvitados = document.getElementById('modalInvitados');
@@ -165,7 +168,15 @@
     const form = document.getElementById('formularioRegistro');
     const mensajeForm = document.getElementById('mensajeForm');
     
-    let tablaDT = null;
+    const buscadorManual = document.getElementById('buscadorManual');
+    const controlLimite = document.getElementById('controlLimite');
+    const infoTabla = document.getElementById('infoTabla');
+    const paginacionTabla = document.getElementById('paginacionTabla');
+
+    let datosOriginales = [];
+    let datosFiltrados = [];
+    let paginaActual = 1;
+    let registrosPorPagina = 10;
 
     function irAAgregarConTitular(nombreTitular) {
       vistaPrincipal.classList.add('hidden');
@@ -177,6 +188,7 @@
     document.getElementById('btnVolver').addEventListener('click', () => {
       vistaFormulario.classList.add('hidden');
       vistaPrincipal.classList.remove('hidden');
+      buscadorManual.value = "";
       cargarPantallaPrincipal(); 
     });
 
@@ -184,7 +196,19 @@
       modalInvitados.classList.add('hidden');
     });
 
-    // MÁSCARA FECHA Y EDAD AUTOMÁTICA
+    buscadorManual.addEventListener('input', () => {
+      const termino = buscadorManual.value.toLowerCase().trim();
+      datosFiltrados = datosOriginales.filter(t => t.nombre.toLowerCase().includes(termino));
+      paginaActual = 1;
+      procesarYRenderizarTabla();
+    });
+
+    controlLimite.addEventListener('change', () => {
+      registrosPorPagina = parseInt(controlLimite.value, 10);
+      paginaActual = 1;
+      procesarYRenderizarTabla();
+    });
+
     inputFecha.addEventListener('input', (e) => {
       let v = e.target.value.replace(/\D/g, ''); 
       if (v.length > 2) v = v.substring(0, 2) + '/' + v.substring(2);
@@ -196,9 +220,9 @@
 
     function calcularEdadAutomatica(fechaTexto) {
       const partes = fechaTexto.split('/');
-      const dia = parseInt(partes[0], 10);
-      const mes = parseInt(partes[1], 10) - 1;
-      const ano = parseInt(partes[2], 10);
+      const dia = parseInt(partes, 10);
+      const mes = parseInt(partes, 10) - 1;
+      const ano = parseInt(partes, 10);
       if (isNaN(dia) || isNaN(mes) || isNaN(ano) || ano < 1900 || mes > 11 || dia > 31) return;
       
       const hoy = new Date();
@@ -208,81 +232,103 @@
       if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) { edadCalculada--; }
       inputEdad.value = edadCalculada >= 0 ? edadCalculada : "";
     }
-
-    // CARGAR PANTALLA PRINCIPAL E INICIALIZAR DATATABLE
     async function cargarPantallaPrincipal() {
       try {
         cargaPrincipal.classList.remove('hidden');
         cargaPrincipal.textContent = "Sincronizando con Google Sheets...";
         contenedorTabla.classList.add('hidden');
 
-        if (tablaDT) {
-          tablaDT.destroy();
-          tablaDT = null;
-        }
-
         const respuesta = await fetch(WEB_APP_URL);
         const res = await respuesta.json();
         
-        cuerpoTitulares.innerHTML = "";
-        const listaDatos = res.datos || [];
-
-        listaDatos.forEach(titular => {
-          const fila = document.createElement('tr');
-          const tieneInvitados = titular.cantidad > 0;
-          fila.innerHTML = `
-            <td>${titular.nombre}</td>
-            <td style="text-align: center;"><span class="badge ${tieneInvitados ? '' : 'badge-vacio'}">${titular.cantidad}</span></td>
-            <td style="text-align: right;">
-              <div class="acciones-td">
-                <button class="btn btn-main" onclick="irAAgregarConTitular('${titular.nombre}')">➕ Agregar</button>
-                <button class="btn btn-info" onclick="verInvitados('${titular.nombre}')">👁️ Ver</button>
-              </div>
-            </td>
-          `;
-          cuerpoTitulares.appendChild(fila);
-        });
-
+        datosOriginales = res.datos || [];
+        datosFiltrados = [...datosOriginales];
+        
         selectTitular.innerHTML = '<option value="">-- Seleccione un Titular --</option>';
-        listaDatos.forEach(t => {
+        datosOriginales.forEach(t => {
           const opt = document.createElement('option');
           opt.value = t.nombre; opt.textContent = t.nombre;
           selectTitular.appendChild(opt);
         });
 
+        procesarYRenderizarTabla();
+        
         cargaPrincipal.classList.add('hidden');
         contenedorTabla.classList.remove('hidden');
-
-        // Inicialización nativa y limpia de DataTable
-        tablaDT = $('#tablaTitulares').DataTable({
-          pageLength: 10,
-          lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
-          destroy: true,
-          autoWidth: false, 
-          language: {
-            processing: "Procesando...",
-            search: "Buscar titular:",
-            lengthMenu: "Mostrar _MENU_ registros",
-            info: "Mostrando _START_ a _END_ de _TOTAL_ titulares",
-            infoEmpty: "Mostrando 0 a 0 de 0 registros",
-            infoFiltered: "(filtrado de un total de _MAX_ registros)",
-            loadingRecords: "Cargando datos...",
-            zeroRecords: "No se encontraron resultados",
-            emptyTable: "Ningún dato disponible en esta tabla",
-            paginate: { first: "Primero", previous: "Anterior", next: "Siguiente", last: "Último" }
-          }
-        });
-
-        setTimeout(() => {
-          if (tablaDT) tablaDT.columns.adjust().draw();
-        }, 150);
 
       } catch (error) {
         cargaPrincipal.textContent = "Error de comunicación con el Apps Script.";
       }
     }
 
-    // VER DETALLE CON FORMATO DE FECHA DD/MM/YYYY
+    function procesarYRenderizarTabla() {
+      cuerpoTitulares.innerHTML = "";
+      const totalRegistros = datosFiltrados.length;
+      
+      let limite = registrosPorPagina === -1 ? totalRegistros : registrosPorPagina;
+      let inicio = (paginaActual - 1) * limite;
+      let fin = inicio + limite;
+      if (fin > totalRegistros) fin = totalRegistros;
+      
+      const datosPagina = datosFiltrados.slice(inicio, fin);
+
+      if (datosPagina.length === 0) {
+        cuerpoTitulares.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#718096;padding:15px;font-size:13px;">No se encontraron resultados</td></tr>`;
+        infoTabla.textContent = "Mostrando 0 a 0 de 0 registros";
+        paginacionTabla.innerHTML = "";
+        return;
+      }
+
+      datosPagina.forEach(titular => {
+        const fila = document.createElement('tr');
+        const tieneInvitados = titular.cantidad > 0;
+        fila.innerHTML = `
+          <td>${titular.nombre}</td>
+          <td style="text-align: center;"><span class="badge ${tieneInvitados ? '' : 'badge-vacio'}">${titular.cantidad}</span></td>
+          <td style="text-align: right;">
+            <div class="acciones-td">
+              <button class="btn btn-main" onclick="irAAgregarConTitular('${titular.nombre.replace(/'/g, "\\'")}')">➕ Agregar</button>
+              <button class="btn btn-info" onclick="verInvitados('${titular.nombre.replace(/'/g, "\\'")}')">👁️ Ver</button>
+            </div>
+          </td>
+        `;
+        cuerpoTitulares.appendChild(fila);
+      });
+
+      infoTabla.textContent = `Mostrando ${totalRegistros === 0 ? 0 : inicio + 1} a ${fin} de ${totalRegistros} titulares (filtrado de ${datosOriginales.length} totales)`;
+      renderizarPaginacion(totalRegistros, limite);
+    }
+
+    function renderizarPaginacion(total, limite) {
+      paginacionTabla.innerHTML = "";
+      const paginasTotales = Math.ceil(total / limite);
+      if (paginasTotales <= 1) return;
+
+      const btnAnt = document.createElement('span');
+      btnAnt.className = `paginate_button ${paginaActual === 1 ? 'disabled' : ''}`;
+      btnAnt.textContent = "Anterior";
+      if (paginaActual > 1) {
+        btnAnt.onclick = () => { paginaActual--; procesarYRenderizarTabla(); };
+      }
+      paginacionTabla.appendChild(btnAnt);
+
+      for (let i = 1; i <= paginasTotales; i++) {
+        const btnPag = document.createElement('span');
+        btnPag.className = `paginate_button ${paginaActual === i ? 'current' : ''}`;
+        btnPag.textContent = i;
+        btnPag.onclick = () => { paginaActual = i; procesarYRenderizarTabla(); };
+        paginacionTabla.appendChild(btnPag);
+      }
+
+      const btnSig = document.createElement('span');
+      btnSig.className = `paginate_button ${paginaActual === paginasTotales ? 'disabled' : ''}`;
+      btnSig.textContent = "Siguiente";
+      if (paginaActual < paginasTotales) {
+        btnSig.onclick = () => { paginaActual++; procesarYRenderizarTabla(); };
+      }
+      paginacionTabla.appendChild(btnSig);
+    }
+
     async function verInvitados(nombreTitular) {
       document.getElementById('modalTitulo').innerHTML = `Invitados de: <span style="color:#007bff; font-weight:normal;">${nombreTitular}</span>`;
       const cuerpoModal = document.getElementById('cuerpoModal');
@@ -298,7 +344,7 @@
           return;
         }
 
-        let htmlTabla = `<table><thead><tr><th>Asistente / Edad</th><th>Fecha Nacimiento</th><th>Restricción</th></tr></thead><tbody>`;
+        let htmlTabla = `<table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#f8f9fa;"><th style="padding:8px; border-bottom:2px solid #cbd5e0; font-size:12px; color:#5a6c7d;">Asistente / Edad</th><th style="padding:8px; border-bottom:2px solid #cbd5e0; font-size:12px; color:#5a6c7d;">Fecha Nacimiento</th><th style="padding:8px; border-bottom:2px solid #cbd5e0; font-size:12px; color:#5a6c7d;">Restricción</th></tr></thead><tbody>`;
         res.invitados.forEach(inv => {
           let fNacimientoStr = inv.fechanacimiento || "No registrada";
           
@@ -308,9 +354,9 @@
           }
 
           htmlTabla += `<tr>
-            <td>${inv.nombreasistente}<br><small style="color:#718096">Edad: ${inv.edad} años</small></td>
-            <td><code>${fNacimientoStr}</code></td>
-            <td>${inv.restriccionalimentaria}${inv.observaciones ? `<br><small style="color:#e53e3e">Obs: ${inv.observaciones}</small>` : ''}</td>
+            <td style="padding:8px; border-bottom:1px solid #eef2f5; font-size:13px;">${inv.nombreasistente}<br><small style="color:#718096">Edad: ${inv.edad} años</small></td>
+            <td style="padding:8px; border-bottom:1px solid #eef2f5; font-size:13px;"><code>${fNacimientoStr}</code></td>
+            <td style="padding:8px; border-bottom:1px solid #eef2f5; font-size:13px;">${inv.restriccionalimentaria}${inv.observaciones ? `<br><small style="color:#e53e3e">Obs: ${inv.observaciones}</small>` : ''}</td>
           </tr>`;
         });
         htmlTabla += `</tbody></table>`;
@@ -336,7 +382,13 @@
       };
 
       try {
-        await fetch(WEB_APP_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        await fetch(WEB_APP_URL, { 
+          method: "POST", 
+          mode: "no-cors", 
+          headers: { "Content-Type": "application/json" }, 
+          body: JSON.stringify(payload) 
+        });
+        
         mensajeForm.textContent = "¡Asistente guardado con éxito!";
         mensajeForm.style.color = "green";
         form.reset();
@@ -349,14 +401,11 @@
       }
     });
 
-    // CORRECCIÓN: Evento estándar y limpio para inicializar la aplicación sin errores
-    window.addEventListener('DOMContentLoaded', () => {
-      cargarPantallaPrincipal();
-    });
+    window.addEventListener('DOMContentLoaded', cargarPantallaPrincipal);
   </script>
 </body>
 </html>
 
 
 
-  
+
