@@ -38,39 +38,41 @@
         <input type="text" id="rut" required placeholder="12.345.678-9">
       </div>
 
-    <div class="form-group">
-  <label for="fechanacimiento">Fecha de Nacimiento (DD/MM/YYYY):</label>
-  <input 
-    type="text" 
-    id="fechanacimiento" 
-    required 
-    placeholder="DD/MM/YYYY" 
-    maxlength="10"
-    pattern="(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/[0-9]{4}"
-    title="El formato debe ser DD/MM/YYYY (ej: 25/11/1995)"
-  >
-</div>
+      <div class="form-group">
+        <label for="fechanacimiento">Fecha de Nacimiento (DD/MM/YYYY):</label>
+        <input 
+          type="text" 
+          id="fechanacimiento" 
+          required 
+          placeholder="DD/MM/YYYY" 
+          maxlength="10"
+          pattern="(0[1-9]|[0-9]|3)/(0[1-9]|1)/[0-9]{4}"
+          title="El formato debe ser DD/MM/YYYY (ej: 25/11/1995)"
+        >
+      </div>
 
       <div class="form-group">
         <label for="edad">Edad:</label>
         <input type="number" id="edad" required min="0" max="120" placeholder="Años">
       </div>
 
+      <!-- AQUÍ SE CAMBIÓ A UN COMBO DESPLEGABLE -->
       <div class="form-group">
-      <label for="restriccion">Restricción Alimentaria:</label>
+        <label for="restriccionalimentaria">Restricción Alimentaria:</label>
         <select id="restriccionalimentaria" required>
-            <option value="Ninguna">Ninguna</option>
-            <option value="Vegano">Vegano/a</option>
-            <option value="Vegetariano">Vegetariano/a</option>
-            <option value="Celiaco (Sin Gluten)">Celíaco (Sin Gluten)</option>
-            <option value="Intolerante Lactosa">Intolerante a la Lactosa</option>
-            <option value="Otro">Otro (Especificar en observaciones)</option>
+          <option value="Ninguna">Ninguna</option>
+          <option value="Vegetariano">Vegetariano</option>
+          <option value="Vegano">Vegano</option>
+          <option value="Celíaco (Sin gluten)">Celíaco (Sin gluten)</option>
+          <option value="Intolerante a la lactosa">Intolerante a la lactosa</option>
+          <option value="Alergia alimentaria (APLV, frutos secos, etc.)">Alergia alimentaria</option>
+          <option value="Otro">Otro (Especificar en observaciones)</option>
         </select>
       </div>
 
       <div class="form-group">
         <label for="observaciones">Observaciones:</label>
-        <textarea id="observaciones" rows="3" placeholder="Detalles adicionales..."></textarea>
+        <textarea id="observaciones" rows="3" placeholder="Detalles adicionales o alergias específicas..."></textarea>
       </div>
 
       <button type="submit" id="btnEnviar" disabled>Guardar Registro</button>
@@ -80,15 +82,25 @@
   </div>
 
   <script>
-    // ⚠️ REEMPLAZA CON TU NUEVA URL DE APPS SCRIPT
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyqh7bh8xe1EwF21V8O5sDUDRSSAm3JT6Ym1mcE3M0XwesPCx9V2nMxZIkcyal5ClxH/exec";
+    // ⚠️ REEMPLAZA CON TU URL DE APPS SCRIPT (LA QUE TERMINA EN /exec)
+    const WEB_APP_URL = "https://google.com";
 
     const selectTitular = document.getElementById('titular');
     const form = document.getElementById('formularioRegistro');
     const btnEnviar = document.getElementById('btnEnviar');
     const mensajeDiv = document.getElementById('mensaje');
+    const inputFecha = document.getElementById('fechanacimiento');
+    const selectRestriccion = document.getElementById('restriccionalimentaria');
 
-    // 1. CARGAR TITULARES AL INICIAR
+    // 1. MÁSCARA AUTOMÁTICA PARA LA FECHA
+    inputFecha.addEventListener('input', (e) => {
+      let v = e.target.value.replace(/\D/g, ''); 
+      if (v.length > 2) v = v.substring(0, 2) + '/' + v.substring(2);
+      if (v.length > 5) v = v.substring(0, 5) + '/' + v.substring(5, 9);
+      e.target.value = v;
+    });
+
+    // 2. CARGAR TITULARES AL INICIAR LA PÁGINA
     window.addEventListener('DOMContentLoaded', async () => {
       try {
         const respuesta = await fetch(WEB_APP_URL);
@@ -110,54 +122,42 @@
       }
     });
 
-    // 2. ENVIAR DATOS A LA HOJA2
-    // 2. ENVIAR DATOS A LA HOJA2
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  btnEnviar.disabled = true;
-  mensajeDiv.textContent = "Enviando registro...";
-  mensajeDiv.style.color = "#333";
+    // 3. ENVIAR DATOS A LA HOJA2
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      btnEnviar.disabled = true;
+      mensajeDiv.textContent = "Enviando registro...";
+      mensajeDiv.style.color = "#333";
 
-  // --- NUEVA CONVERSIÓN DE FECHA A DD/MM/AAAA ---
-  const fechaInput = document.getElementById('fechanacimiento').value; // Formato original: aaaa-mm-dd
-  let fechaFormateada = "";
-  
-  if (fechaInput) {
-    const partes = fechaInput.split("-"); // Divide el texto por los guiones
-    fechaFormateada = `${partes[2]}/${partes[1]}/${partes[0]}`; // Lo une como: dd/mm/aaaa
-  }
-  // ----------------------------------------------
+      const payload = {
+        titular: selectTitular.value,
+        nombreasistente: document.getElementById('nombreasistente').value,
+        rut: document.getElementById('rut').value,
+        fechanacimiento: inputFecha.value,
+        edad: parseInt(document.getElementById('edad').value),
+        restriccionalimentaria: selectRestriccion.value, // Envía la opción seleccionada del combo
+        observaciones: document.getElementById('observaciones').value
+      };
 
-  const payload = {
-    titular: selectTitular.value,
-    nombreasistente: document.getElementById('nombreasistente').value,
-    rut: document.getElementById('rut').value,
-    fechanacimiento: fechaFormateada, // Enviamos el formato correcto modificado
-    edad: parseInt(document.getElementById('edad').value),
-    restriccionalimentaria: document.getElementById('restriccionalimentaria').value,
-    observaciones: document.getElementById('observaciones').value
-  };
+      try {
+        await fetch(WEB_APP_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
 
-  try {
-    await fetch(WEB_APP_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+        mensajeDiv.textContent = "¡Registro guardado con éxito en Hoja2!";
+        mensajeDiv.style.color = "green";
+        form.reset();
+        selectRestriccion.value = "Ninguna"; // Reinicia el combo a la opción por defecto
+      } catch (error) {
+        mensajeDiv.textContent = "Error al intentar guardar.";
+        mensajeDiv.style.color = "red";
+      } finally {
+        btnEnviar.disabled = false;
+      }
     });
-
-    mensajeDiv.textContent = "¡Registro guardado con éxito en Hoja2!";
-    mensajeDiv.style.color = "green";
-    form.reset();
-  } catch (error) {
-    mensajeDiv.textContent = "Error al intentar guardar.";
-    mensajeDiv.style.color = "red";
-  } finally {
-    btnEnviar.disabled = false;
-  }
-});
-
   </script>
 </body>
 </html>
-
