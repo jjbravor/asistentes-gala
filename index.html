@@ -5,51 +5,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistema de Gestión de Asistentes</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 20px; background-color: #f4f6f9; color: #333; }
-    .container { max-width: 750px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); margin: 20px auto; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 15px; background-color: #f4f6f9; color: #333; }
+    .container { max-width: 700px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); margin: 15px auto; }
     .hidden { display: none !important; }
-    .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 10px; border-bottom: 2px solid #f1f1f1; }
-    h2 { margin: 0; color: #2c3e50; font-size: 22px; }
-    .btn { padding: 10px 18px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; transition: background 0.2s; display: inline-flex; align-items: center; gap: 5px; }
-    .btn-main { background-color: #007bff; color: white; }
+    .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f1f1f1; }
+    h2 { margin: 0; color: #2c3e50; font-size: 18px; }
+    
+    /* Barra de Búsqueda Compacta */
+    .search-container { margin-bottom: 15px; }
+    .search-input { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+    
+    /* Botones muy compactos para la tabla */
+    .btn { padding: 6px 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 13px; transition: background 0.2s; display: inline-flex; align-items: center; gap: 5px; }
+    .btn-main { background-color: #007bff; color: white; padding: 4px 8px; font-size: 12px; }
     .btn-main:hover { background-color: #0056b3; }
-    .btn-success { background-color: #28a745; color: white; width: 100%; padding: 14px; font-size: 16px; justify-content: center; }
-    .btn-success:hover { background-color: #218838; }
+    .btn-success { background-color: #28a745; color: white; width: 100%; padding: 12px; font-size: 15px; justify-content: center; }
     .btn-secondary { background-color: #6c757d; color: white; }
-    .btn-secondary:hover { background-color: #5a6268; }
-    .btn-info { background-color: #17a2b8; color: white; padding: 6px 12px; font-size: 13px; }
+    .btn-info { background-color: #17a2b8; color: white; padding: 4px 8px; font-size: 12px; }
     .btn-info:hover { background-color: #138496; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { text-align: left; padding: 14px; border-bottom: 1px solid #eef2f5; }
-    th { background-color: #f8f9fa; color: #5a6c7d; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+    .acciones-td { display: flex; justify-content: flex-end; gap: 6px; }
+    
+    /* Tabla reducida en extensión y tamaño de letra */
+    table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #eef2f5; font-size: 13px; }
+    th { background-color: #f8f9fa; color: #5a6c7d; font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
     tr:hover { background-color: #fafbfc; }
-    .badge { background-color: #007bff; color: white; padding: 4px 10px; border-radius: 50px; font-size: 13px; font-weight: bold; }
+    .badge { background-color: #007bff; color: white; padding: 2px 8px; border-radius: 50px; font-size: 11px; font-weight: bold; }
     .badge-vacio { background-color: #6c757d; }
-    .form-group { margin-bottom: 18px; }
-    label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 14px; color: #4a5568; }
-    select, input, textarea { width: 100%; padding: 11px; border: 1px solid #cbd5e0; border-radius: 6px; box-sizing: border-box; font-size: 15px; background-color: #fff; }
-    select:focus, input:focus, textarea:focus { border-color: #3182ce; outline: none; box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15); }
-    input:disabled { background-color: #edf2f7; color: #4a5568; cursor: not-allowed; }
+
+    .form-group { margin-bottom: 14px; }
+    label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 13px; color: #4a5568; }
+    select, input, textarea { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e0; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+    input:disabled { background-color: #edf2f7; color: #4a5568; }
     .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-    .modal-content { background: white; padding: 25px; border-radius: 10px; max-width: 650px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
-    .status-msg { margin-top: 20px; font-weight: bold; text-align: center; font-size: 15px; }
+    .modal-content { background: white; padding: 20px; border-radius: 10px; max-width: 600px; width: 90%; max-height: 75vh; overflow-y: auto; }
+    .status-msg { margin-top: 15px; font-weight: bold; text-align: center; font-size: 14px; }
   </style>
 </head>
 <body>
 
-  <!-- PANTALLA 1: LISTADO PRINCIPAL -->
+  <!-- PANTALLA 1: LISTADO PRINCIPAL COMPACTO CON BUSCADOR -->
   <div id="vistaPrincipal" class="container">
     <div class="header-row">
-      <h2>Listado de Titulares (Hoja1)</h2>
-      <button class="btn btn-main" id="btnIrAgregar">➕ Agregar Registro</button>
+      <h2>Listado de Titulares</h2>
     </div>
-    <div id="cargaPrincipal" class="status-msg">Cargando base de datos...</div>
+    
+    <!-- BARRA DE BÚSQUEDA -->
+    <div class="search-container">
+      <input type="text" id="buscadorTitular" class="search-input" placeholder="🔍 Buscar titular por nombre...">
+    </div>
+    
+    <div id="cargaPrincipal" class="status-msg">Sincronizando con Google Sheets...</div>
+    
     <table id="tablaTitulares" class="hidden">
       <thead>
         <tr>
           <th>Nombre del Titular</th>
-          <th style="text-align: center;">Invitados Registrados</th>
-          <th style="text-align: right;">Acciones</th>
+          <th style="text-align: center;">Registros</th>
+          <th style="text-align: right; padding-right: 25px;">Acciones</th>
         </tr>
       </thead>
       <tbody id="cuerpoTitulares"></tbody>
@@ -59,31 +72,29 @@
   <!-- PANTALLA 2: FORMULARIO -->
   <div id="vistaFormulario" class="container hidden">
     <div class="header-row">
-      <h2>Nuevo Registro de Asistente (Hacia Hoja2)</h2>
-      <button class="btn btn-secondary" id="btnVolver">⬅ Volver al Listado</button>
+      <h2>Nuevo Registro de Asistente</h2>
+      <button class="btn btn-secondary" id="btnVolver">⬅ Volver</button>
     </div>
     <form id="formularioRegistro">
       <div class="form-group">
         <label for="titular">Titular Responsable:</label>
-        <select id="titular" required>
-          <option value="">Cargando lista de titulares...</option>
-        </select>
+        <select id="titular" required></select>
       </div>
       <div class="form-group">
-        <label for="nombreasistente">Nombre del Asistente / Invitado:</label>
-        <input type="text" id="nombreasistente" required placeholder="Nombre completo del asistente">
+        <label for="nombreasistente">Nombre del Asistente:</label>
+        <input type="text" id="nombreasistente" required placeholder="Nombre completo">
       </div>
       <div class="form-group">
         <label for="rut">RUT:</label>
         <input type="text" id="rut" required placeholder="12.345.678-9" maxlength="12">
       </div>
       <div class="form-group">
-        <label for="fechanacimiento">Fecha de Nacimiento (DD/MM/YYYY):</label>
+        <label for="fechanacimiento">Fecha de Nacimiento:</label>
         <input type="text" id="fechanacimiento" required placeholder="DD/MM/YYYY" maxlength="10">
       </div>
       <div class="form-group">
         <label for="edad">Edad Calculada:</label>
-        <input type="number" id="edad" required readonly placeholder="Se calcula automáticamente">
+        <input type="number" id="edad" required readonly placeholder="Se calcula sola">
       </div>
       <div class="form-group">
         <label for="restriccionalimentaria">Restricción Alimentaria:</label>
@@ -93,14 +104,14 @@
           <option value="Vegano">Vegano</option>
           <option value="Celíaco (Sin gluten)">Celíaco (Sin gluten)</option>
           <option value="Intolerante a la lactosa">Intolerante a la lactosa</option>
-          <option value="Otro">Otro (Especificar en observaciones)</option>
+          <option value="Otro">Otro</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="observaciones">Observaciones adicionales:</label>
-        <textarea id="observaciones" rows="3" placeholder="Detalles adicionales..."></textarea>
+        <label for="observaciones">Observaciones:</label>
+        <textarea id="observaciones" rows="2" placeholder="Detalles..."></textarea>
       </div>
-      <button type="submit" class="btn btn-success" id="btnEnviar">💾 Guardar Registro en Hoja2</button>
+      <button type="submit" class="btn btn-success" id="btnEnviar">💾 Guardar Registro</button>
     </form>
     <div id="mensajeForm" class="status-msg"></div>
   </div>
@@ -108,16 +119,18 @@
   <!-- POP-UP FLOTANTE -->
   <div id="modalInvitados" class="modal hidden">
     <div class="modal-content">
-      <div class="header-row" style="border-bottom: 1px solid #eee; margin-bottom: 15px;">
-        <h3 id="modalTitulo" style="margin:0; color:#1a202c;">Invitados del Titular</h3>
-        <button class="btn btn-secondary" id="btnCerrarModal" style="padding: 5px 10px;">Cerrar</button>
+      <div class="header-row" style="border-bottom: 1px solid #eee; margin-bottom: 10px;">
+        <h3 id="modalTitulo" style="margin:0; font-size:16px;">Invitados</h3>
+        <button class="btn btn-secondary" id="btnCerrarModal" style="padding: 3px 8px;">Cerrar</button>
       </div>
-      <div id="cuerpoModal" style="margin-top: 10px;">Cargando lista filtrada...</div>
+      <div id="cuerpoModal">Cargando...</div>
     </div>
   </div>
+
     <script>
     // ⚠️ REEMPLAZA ESTA URL CON TU ENLACE DE GOOGLE APPS SCRIPT (/exec)
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxTC6cjZLsfzRl-7q3G3ZqM1alZmmPycwqt5tu3afQggXKBWdURzBjAx56exzhEvdg/exec";
+ 
 
     const vistaPrincipal = document.getElementById('vistaPrincipal');
     const vistaFormulario = document.getElementById('vistaFormulario');
@@ -131,16 +144,24 @@
     const inputRut = document.getElementById('rut');
     const form = document.getElementById('formularioRegistro');
     const mensajeForm = document.getElementById('mensajeForm');
+    const buscadorTitular = document.getElementById('buscadorTitular');
 
-    document.getElementById('btnIrAgregar').addEventListener('click', () => {
+    let datosOriginales = [];
+
+    // NUEVA FUNCIÓN: Abre el formulario asignando el titular de inmediato
+    function irAAgregarConTitular(nombreTitular) {
       vistaPrincipal.classList.add('hidden');
       vistaFormulario.classList.remove('hidden');
       mensajeForm.textContent = "";
-    });
+      
+      // Auto-selecciona el titular en el combo desplegable
+      selectTitular.value = nombreTitular;
+    }
 
     document.getElementById('btnVolver').addEventListener('click', () => {
       vistaFormulario.classList.add('hidden');
       vistaPrincipal.classList.remove('hidden');
+      buscadorTitular.value = "";
       cargarPantallaPrincipal(); 
     });
 
@@ -148,18 +169,45 @@
       modalInvitados.classList.add('hidden');
     });
 
-    // MÁSCARA AUTOMÁTICA FECHA Y DISPARO DE EDAD
+    buscadorTitular.addEventListener('input', (e) => {
+      const textoBuscado = e.target.value.toLowerCase().trim();
+      const datosFiltrados = datosOriginales.filter(titular => 
+        titular.nombre.toLowerCase().includes(textoBuscado)
+      );
+      renderizarTabla(datosFiltrados);
+    });
+
+    function renderizarTabla(lista) {
+      cuerpoTitulares.innerHTML = "";
+      if (lista.length === 0) {
+        cuerpoTitulares.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#718096; padding:15px;">No se encontraron titulares con ese nombre.</td></tr>`;
+        return;
+      }
+      lista.forEach(titular => {
+        const fila = document.createElement('tr');
+        const tieneInvitados = titular.cantidad > 0;
+        fila.innerHTML = `
+          <td><strong>${titular.nombre}</strong></td>
+          <td style="text-align: center;"><span class="badge ${tieneInvitados ? '' : 'badge-vacio'}">${titular.cantidad}</span></td>
+          <td style="text-align: right;">
+            <div class="acciones-td">
+              <button class="btn btn-main" onclick="irAAgregarConTitular('${titular.nombre}')">➕ Agregar</button>
+              <button class="btn btn-info" onclick="verInvitados('${titular.nombre}')">👁️ Ver</button>
+            </div>
+          </td>
+        `;
+        cuerpoTitulares.appendChild(fila);
+      });
+    }
+
+    // MÁSCARA FECHA Y EDAD AUTOMÁTICA
     inputFecha.addEventListener('input', (e) => {
       let v = e.target.value.replace(/\D/g, ''); 
       if (v.length > 2) v = v.substring(0, 2) + '/' + v.substring(2);
       if (v.length > 5) v = v.substring(0, 5) + '/' + v.substring(5, 9);
       e.target.value = v;
-
-      if (v.length === 10) {
-        calcularEdadAutomatica(v);
-      } else {
-        inputEdad.value = ""; 
-      }
+      if (v.length === 10) calcularEdadAutomatica(v);
+      else inputEdad.value = ""; 
     });
 
     function calcularEdadAutomatica(fechaTexto) {
@@ -173,9 +221,7 @@
       const cumpleanos = new Date(ano, mes, dia);
       let edadCalculada = hoy.getFullYear() - cumpleanos.getFullYear();
       const m = hoy.getMonth() - cumpleanos.getMonth();
-      if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) {
-        edadCalculada--;
-      }
+      if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) { edadCalculada--; }
       inputEdad.value = edadCalculada >= 0 ? edadCalculada : "";
     }
 
@@ -185,11 +231,8 @@
       if (v.length < 2) { e.target.value = v; return; }
       let cuerpo = v.slice(0, -1);
       let dv = v.slice(-1).toUpperCase();
-      if (cuerpo.length > 3 && cuerpo.length <= 6) {
-        cuerpo = cuerpo.slice(0, -3) + '.' + cuerpo.slice(-3);
-      } else if (cuerpo.length > 6) {
-        cuerpo = cuerpo.slice(0, -6) + '.' + cuerpo.slice(-6, -3) + '.' + cuerpo.slice(-3);
-      }
+      if (cuerpo.length > 3 && cuerpo.length <= 6) { cuerpo = cuerpo.slice(0, -3) + '.' + cuerpo.slice(-3); }
+      else if (cuerpo.length > 6) { cuerpo = cuerpo.slice(0, -6) + '.' + cuerpo.slice(-6, -3) + '.' + cuerpo.slice(-3); }
       e.target.value = cuerpo + '-' + dv;
     });
 
@@ -201,24 +244,12 @@
 
         const respuesta = await fetch(WEB_APP_URL);
         const res = await respuesta.json();
-        cuerpoTitulares.innerHTML = "";
-        const listaDatos = res.datos || [];
-
-        listaDatos.forEach(titular => {
-          const fila = document.createElement('tr');
-          const tieneInvitados = titular.cantidad > 0;
-          fila.innerHTML = `
-            <td><strong>${titular.nombre}</strong></td>
-            <td style="text-align: center;"><span class="badge ${tieneInvitados ? '' : 'badge-vacio'}">${titular.cantidad}</span></td>
-            <td style="text-align: right;">
-              <button class="btn btn-info" onclick="verInvitados('${titular.nombre}')">👁️ Ver Invitados</button>
-            </td>
-          `;
-          cuerpoTitulares.appendChild(fila);
-        });
+        
+        datosOriginales = res.datos || [];
+        renderizarTabla(datosOriginales);
 
         selectTitular.innerHTML = '<option value="">-- Seleccione un Titular --</option>';
-        listaDatos.forEach(t => {
+        datosOriginales.forEach(t => {
           const opt = document.createElement('option');
           opt.value = t.nombre; opt.textContent = t.nombre;
           selectTitular.appendChild(opt);
@@ -232,9 +263,9 @@
     }
 
     async function verInvitados(nombreTitular) {
-      document.getElementById('modalTitulo').innerHTML = `Invitados vinculados a:<br><span style="color:#007bff;">${nombreTitular}</span>`;
+      document.getElementById('modalTitulo').innerHTML = `Invitados de: <span style="color:#007bff;">${nombreTitular}</span>`;
       const cuerpoModal = document.getElementById('cuerpoModal');
-      cuerpoModal.innerHTML = "Buscando coincidencias en la Hoja2...";
+      cuerpoModal.innerHTML = "Buscando coincidencias...";
       modalInvitados.classList.remove('hidden');
 
       try {
@@ -242,22 +273,22 @@
         const res = await respuesta.json();
 
         if (!res.invitados || res.invitados.length === 0) {
-          cuerpoModal.innerHTML = "<p style='text-align:center;color:#718096;padding:20px;'>Este titular aún no tiene ningún invitado registrado en la Hoja2.</p>";
+          cuerpoModal.innerHTML = "<p style='text-align:center;color:#718096;padding:10px;font-size:13px;'>Sin invitados registrados en Hoja2.</p>";
           return;
         }
 
         let htmlTabla = `<table><thead><tr><th>Asistente / Edad</th><th>RUT</th><th>Restricción</th></tr></thead><tbody>`;
         res.invitados.forEach(inv => {
           htmlTabla += `<tr>
-            <td><strong>${inv.nombreasistente}</strong><br><small style="color:#718096">Edad: ${inv.edad} años (${inv.fechanacimiento})</small></td>
+            <td><strong>${inv.nombreasistente}</strong><br><small style="color:#718096">Edad: ${inv.edad} (${inv.fechanacimiento})</small></td>
             <td><code>${inv.rut}</code></td>
-            <td><span style="font-size:13px;">${inv.restriccionalimentaria}</span>${inv.observaciones ? `<br><small style="color:#e53e3e">Obs: ${inv.observaciones}</small>` : ''}</td>
+            <td>${inv.restriccionalimentaria}${inv.observaciones ? `<br><small style="color:#e53e3e">Obs: ${inv.observaciones}</small>` : ''}</td>
           </tr>`;
         });
         htmlTabla += `</tbody></table>`;
         cuerpoModal.innerHTML = htmlTabla;
       } catch (e) {
-        cuerpoModal.innerHTML = "Error al decodificar la lista de invitados.";
+        cuerpoModal.innerHTML = "Error al decodificar la lista.";
       }
     }
 
@@ -266,7 +297,6 @@
       if (inputFecha.value.length < 10) { alert("Completa la fecha en formato DD/MM/YYYY"); return; }
       document.getElementById('btnEnviar').disabled = true;
       mensajeForm.textContent = "Escribiendo en Google Sheets...";
-      mensajeForm.style.color = "#2c3e50";
 
       const payload = {
         titular: selectTitular.value,
@@ -285,7 +315,7 @@
         form.reset();
         document.getElementById('restriccionalimentaria').value = "Ninguna";
       } catch (error) {
-        mensajeForm.textContent = "Error al intentar guardar el registro.";
+        mensajeForm.textContent = "Error al intentar guardar.";
         mensajeForm.style.color = "red";
       } finally {
         document.getElementById('btnEnviar').disabled = false;
@@ -296,4 +326,3 @@
   </script>
 </body>
 </html>
-
