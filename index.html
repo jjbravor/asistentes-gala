@@ -16,6 +16,42 @@
     table.dataTable thead th { background-color: #f8f9fa !important; color: #5a6c7d !important; font-weight: 600 !important; font-size: 11px !important; text-transform: uppercase; border-bottom: 2px solid #cbd5e0 !important; padding: 10px 12px !important; text-align: left; }
     table.dataTable tbody td { padding: 10px 12px !important; border-bottom: 1px solid #eef2f5; }
     table.dataTable tbody tr:hover { background-color: #fafbfc; }
+/* 📄 DISEÑO DE BOTONES DE PAGINACIÓN INTERACTIVOS CORREGIDO */
+    .dataTables_paginate { display: inline-flex; align-items: center; gap: 4px; padding-top: 15px; user-select: none; }
+    .dataTables_paginate .paginate_button { 
+      display: inline-block; 
+      padding: 6px 12px; 
+      border: 1px solid #e2e8f0; 
+      border-radius: 6px; 
+      background-color: #ffffff; 
+      color: #4a5568 !important; 
+      font-size: 12px; 
+      font-weight: 600; 
+      text-decoration: none !important; 
+      cursor: pointer; 
+      transition: all 0.2s ease; 
+    }
+    /* Estilo para la página donde estás parado actualmente */
+    .dataTables_paginate .paginate_button.current { 
+      background-color: #007bff; 
+      color: #ffffff !important; 
+      border-color: #007bff; 
+    }
+    /* Efecto al pasar el mouse por encima de un botón activo */
+    .dataTables_paginate .paginate_button:not(.current):not(.disabled):hover { 
+      background-color: #edf2f7; 
+      border-color: #cbd5e0; 
+      color: #2d3748 !important; 
+    }
+    /* Estilo para botones bloqueados (ej: Anterior si estás en la página 1) */
+    .dataTables_paginate .paginate_button.disabled { 
+      cursor: not-allowed; 
+      color: #a0aec0 !important; 
+      border-color: #edf2f7; 
+      background-color: #f7fafc; 
+    }
+
+    
         /* 🎨 DISEÑO AMPLIO (1000px) Y ADAPTATIVO */
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 15px; background-color: #f4f6f9; color: #333; }
     .container { max-width: 1000px; width: 100%; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); margin: 15px auto; box-sizing: border-box; }
