@@ -169,9 +169,9 @@
 
     function calcularEdadAutomatica(fechaTexto) {
       const partes = fechaTexto.split('/');
-      const dia = parseInt(partes[0], 10);
-      const mes = parseInt(partes[1], 10) - 1;
-      const ano = parseInt(partes[2], 10);
+      const dia = parseInt(partes, 10);
+      const mes = parseInt(partes, 10) - 1;
+      const ano = parseInt(partes, 10);
       if (isNaN(dia) || isNaN(mes) || isNaN(ano) || ano < 1900 || mes > 11 || dia > 31) return;
       
       const hoy = new Date();
@@ -270,8 +270,8 @@
           let fNacimientoStr = inv.fechanacimiento || "No registrada";
           
           if (fNacimientoStr.includes("T")) {
-            const partesIso = fNacimientoStr.split("T")[0].split("-");
-            if(partesIso.length === 3) fNacimientoStr = `${partesIso[2]}/${partesIso[1]}/${partesIso[0]}`;
+            const partesIso = fNacimientoStr.split("T").split("-");
+            if(partesIso.length === 3) fNacimientoStr = `${partesIso}/${partesIso}/${partesIso}`;
           }
 
           htmlTabla += `<tr>
@@ -320,4 +320,3 @@
   </script>
 </body>
 </html>
-
