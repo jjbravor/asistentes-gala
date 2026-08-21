@@ -6,7 +6,7 @@
   <title>Sistema de Gestión de Asistentes</title>
   
   <style>
-    /* 🛠️ ESTILOS NATIVOS LOCALES DE DATATABLES */
+    /* Estilos de la tabla de datos */
     .dataTables_wrapper { position: relative; clear: both; margin: 15px 0 !important; width: 100% !important; font-size: 13px; }
     .dataTables_length { float: left; margin-bottom: 15px; }
     .dataTables_filter { float: right; text-align: right; margin-bottom: 15px; }
@@ -17,45 +17,21 @@
     table.dataTable tbody td { padding: 10px 12px !important; border-bottom: 1px solid #eef2f5; }
     table.dataTable tbody tr:hover { background-color: #fafbfc; }
 
-    /* 📄 DISEÑO DE BOTONES DE PAGINACIÓN INTERACTIVOS CORREGIDO */
+    /* Paginación */
     .dataTables_paginate { display: inline-flex; align-items: center; gap: 4px; padding-top: 15px; user-select: none; }
-    .dataTables_paginate .paginate_button { 
-      display: inline-block; 
-      padding: 6px 12px; 
-      border: 1px solid #e2e8f0; 
-      border-radius: 6px; 
-      background-color: #ffffff; 
-      color: #4a5568 !important; 
-      font-size: 12px; 
-      font-weight: 600; 
-      text-decoration: none !important; 
-      cursor: pointer; 
-      transition: all 0.2s ease; 
-    }
-    .dataTables_paginate .paginate_button.current { 
-      background-color: #007bff; 
-      color: #ffffff !important; 
-      border-color: #007bff; 
-    }
-    .dataTables_paginate .paginate_button:not(.current):not(.disabled):hover { 
-      background-color: #edf2f7; 
-      border-color: #cbd5e0; 
-      color: #2d3748 !important; 
-    }
-    .dataTables_paginate .paginate_button.disabled { 
-      cursor: not-allowed; 
-      color: #a0aec0 !important; 
-      border-color: #edf2f7; 
-      background-color: #f7fafc; 
-    }
+    .dataTables_paginate .paginate_button { display: inline-block; padding: 6px 12px; border: 1px solid #e2e8f0; border-radius: 6px; background-color: #ffffff; color: #4a5568 !important; font-size: 12px; font-weight: 600; text-decoration: none !important; cursor: pointer; transition: all 0.2s ease; }
+    .dataTables_paginate .paginate_button.current { background-color: #007bff; color: #ffffff !important; border-color: #007bff; }
+    .dataTables_paginate .paginate_button:not(.current):not(.disabled):hover { background-color: #edf2f7; border-color: #cbd5e0; color: #2d3748 !important; }
+    .dataTables_paginate .paginate_button.disabled { cursor: not-allowed; color: #a0aec0 !important; border-color: #edf2f7; background-color: #f7fafc; }
 
-    /* 🎨 DISEÑO AMPLIO Y ADAPTATIVO */
+    /* Diseño General */
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 15px; background-color: #f4f6f9; color: #333; }
     .container { max-width: 1000px; width: 100%; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); margin: 15px auto; box-sizing: border-box; }
     .hidden { display: none !important; }
     .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f1f1f1; gap: 10px; }
     h2 { margin: 0; color: #2c3e50; font-size: 18px; }
     
+    /* Botones y Badges */
     .btn { padding: 6px 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 13px; transition: background 0.2s; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
     .btn-main { background-color: #007bff; color: white; padding: 4px 8px; font-size: 12px; }
     .btn-main:hover { background-color: #0056b3; }
@@ -63,8 +39,8 @@
     .btn-secondary { background-color: #6c757d; color: white; }
     .btn-info { background-color: #17a2b8; color: white; padding: 4px 8px; font-size: 12px; }
     .btn-info:hover { background-color: #138496; }
-    .btn-danger { background-color: #dc3545; color: white; padding: 4px 8px; font-size: 12px; }
-    .btn-danger:hover { background-color: #bd2130; }
+    .btn-warning { background-color: #ffc107; color: #212529; padding: 3px 6px; font-size: 11px; }
+    .btn-danger { background-color: #dc3545; color: white; padding: 3px 6px; font-size: 11px; }
     .acciones-td { display: flex; justify-content: flex-end; gap: 6px; }
     
     #contenedorTabla { width: 100% !important; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; }
@@ -74,8 +50,9 @@
     label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 13px; color: #4a5568; }
     select, input, textarea { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e0; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
     
+    /* Modal Flotante */
     .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-    .modal-content { background: white; padding: 20px; border-radius: 10px; max-width: 800px; width: 90%; max-height: 75vh; overflow-y: auto; box-sizing: border-box; }
+    .modal-content { background: white; padding: 20px; border-radius: 10px; max-width: 850px; width: 90%; max-height: 80vh; overflow-y: auto; box-sizing: border-box; }
     .status-msg { margin-top: 15px; font-weight: bold; text-align: center; font-size: 14px; }
     
     @media (max-width: 480px) {
@@ -89,7 +66,7 @@
 </head>
 <body>
 
-  <!-- PANTALLA 1: LISTADO PRINCIPAL -->
+  <!-- PANTALLA 1: LISTADO PRINCIPAL DE TITULARES -->
   <div id="vistaPrincipal" class="container">
     <div class="header-row">
       <h2>Listado General de Titulares</h2>
@@ -134,16 +111,15 @@
     </div>
   </div>
 
-  <!-- PANTALLA 2: FORMULARIO DE REGISTRO / EDICIÓN -->
+  <!-- PANTALLA 2: FORMULARIO DE REGISTRO/EDICIÓN -->
   <div id="vistaFormulario" class="container hidden">
     <div class="header-row">
       <h2 id="tituloFormulario">Nuevo Registro de Asistente</h2>
       <button class="btn btn-secondary" id="btnVolver">⬅ Volver</button>
     </div>
     <form id="formularioRegistro">
-      <!-- CAMPO OCULTO PARA ALMACENAR EL ID DE LA FILA EN CASO DE EDICIÓN -->
-      <input type="hidden" id="idFilaEditando" value="">
-
+      <input type="hidden" id="numFila" value="">
+      
       <div class="form-group">
         <label for="titular">Titular Responsable:</label>
         <select id="titular" required></select>
@@ -158,7 +134,7 @@
       </div>
       <div class="form-group">
         <label for="edad">Edad Calculada:</label>
-        <input type="number" id="edad" required readonly placeholder="Se calcula sola mediante la fecha">
+        <input type="number" id="edad" required readonly placeholder="Se calcula automáticamente">
       </div>
       <div class="form-group">
         <label for="restriccionalimentaria">Restricción Alimentaria:</label>
@@ -173,14 +149,14 @@
       </div>
       <div class="form-group">
         <label for="observaciones">Observaciones:</label>
-        <textarea id="observaciones" rows="2" placeholder="Detalles..."></textarea>
+        <textarea id="observaciones" rows="2" placeholder="Detalles o especificaciones..."></textarea>
       </div>
       <button type="submit" class="btn btn-success" id="btnEnviar">💾 Guardar Registro</button>
     </form>
     <div id="mensajeForm" class="status-msg"></div>
   </div>
 
-  <!-- POP-UP FLOTANTE (MODAL REGISTROS) -->
+  <!-- MODAL DE DETALLE Y GESTIÓN DE INVITADOS -->
   <div id="modalInvitados" class="modal hidden">
     <div class="modal-content">
       <div class="header-row" style="border-bottom: 1px solid #eee; margin-bottom: 10px;">
@@ -191,61 +167,87 @@
     </div>
   </div>
 
-  <!-- ⚙️ LÓGICA DE CONTROLADORES JAVASCRIPT -->
   <script>
-    // ESTADO GLOBAL DE DATOS
-    let datosTitulares = [];
-    let titularesFiltrados = [];
-    let registrosModalActuales = [];
-    let paginaActual = 1;
-    let registrosPorPagina = 10;
+    // URL DE TU APLICACIÓN WEB DE GOOGLE APPS SCRIPT
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzUqLAOxwGVfRAV9hhUe_jIc3l3sA07IVAXdOEIagaSWnzSr9W-_kI6lxBH2OmTXKTd/exec";
 
-    // ELEMENTOS DOM
+    const vistaPrincipal = document.getElementById('vistaPrincipal');
+    const vistaFormulario = document.getElementById('vistaFormulario');
+    const modalInvitados = document.getElementById('modalInvitados');
+    const cuerpoTitulares = document.getElementById('cuerpoTitulares');
+    const contenedorTabla = document.getElementById('contenedorTabla');
+    const cargaPrincipal = document.getElementById('cargaPrincipal');
+    const selectTitular = document.getElementById('titular');
     const inputFecha = document.getElementById('fechanacimiento');
     const inputEdad = document.getElementById('edad');
+    const inputNumFila = document.getElementById('numFila');
     const form = document.getElementById('formularioRegistro');
-    const selectTitular = document.getElementById('titular');
-    const modal = document.getElementById('modalInvitados');
+    const mensajeForm = document.getElementById('mensajeForm');
+    const tituloFormulario = document.getElementById('tituloFormulario');
+    
+    const buscadorManual = document.getElementById('buscadorManual');
+    const controlLimite = document.getElementById('controlLimite');
+    const infoTabla = document.getElementById('infoTabla');
+    const paginacionTabla = document.getElementById('paginacionTabla');
 
-    // AL CARGAR LA PÁGINA INICIALIZAR EVENTOS Y DATOS
-    document.addEventListener('DOMContentLoaded', () => {
-      cargarDatosIniciales();
+    let datosOriginales = [];
+    let datosFiltrados = [];
+    let paginaActual = 1;
+    let registrosPorPagina = 10;
+    let titularActualModal = "";
 
-      // MÁSCARA Y CÁLCULO DE EDAD AUTOMÁTICO
-      inputFecha.addEventListener('input', (e) => {
-        let v = e.target.value.replace(/\D/g, ''); 
-        if (v.length > 2) v = v.substring(0, 2) + '/' + v.substring(2);
-        if (v.length > 5) v = v.substring(0, 5) + '/' + v.substring(5, 9);
-        e.target.value = v;
+    function irAAgregarConTitular(nombreTitular) {
+      modalInvitados.classList.add('hidden');
+      vistaPrincipal.classList.add('hidden');
+      vistaFormulario.classList.remove('hidden');
+      mensajeForm.textContent = "";
+      
+      form.reset();
+      inputNumFila.value = "";
+      tituloFormulario.textContent = "Nuevo Registro de Asistente";
+      selectTitular.value = nombreTitular;
+      selectTitular.disabled = false;
+      document.getElementById('restriccionalimentaria').value = "Ninguna";
+    }
 
-        if (v.length === 10) calcularEdadAutomatica(v);
-        else inputEdad.value = ""; 
-      });
-
-      // EVENTOS DE NAVEGACIÓN Y ACCIONES
-      document.getElementById('btnVolver').addEventListener('click', mostrarListaPrincipal);
-      document.getElementById('btnCerrarModal').addEventListener('click', () => modal.classList.add('hidden'));
-      document.getElementById('controlLimite').addEventListener('change', (e) => {
-        registrosPorPagina = parseInt(e.target.value, 10);
-        paginaActual = 1;
-        renderizarTabla();
-      });
-      document.getElementById('buscadorManual').addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        titularesFiltrados = datosTitulares.filter(t => t.nombre.toLowerCase().includes(query));
-        paginaActual = 1;
-        renderizarTabla();
-      });
-
-      // ENVÍO DEL FORMULARIO (GUARDAR O ACTUALIZAR)
-      form.addEventListener('submit', guardarOActualizarFormulario);
+    document.getElementById('btnVolver').addEventListener('click', () => {
+      vistaFormulario.classList.add('hidden');
+      vistaPrincipal.classList.remove('hidden');
+      buscadorManual.value = "";
+      cargarPantallaPrincipal(); 
     });
 
-    // 1. CÁLCULO DE EDAD MEJORADO CON COMPROBACIÓN DE DÍAS REALES
+    document.getElementById('btnCerrarModal').addEventListener('click', () => {
+      modalInvitados.classList.add('hidden');
+    });
+
+    buscadorManual.addEventListener('input', () => {
+      const termino = buscadorManual.value.toLowerCase().trim();
+      datosFiltrados = datosOriginales.filter(t => t.nombre.toLowerCase().includes(termino));
+      paginaActual = 1;
+      procesarYRenderizarTabla();
+    });
+
+    controlLimite.addEventListener('change', () => {
+      registrosPorPagina = parseInt(controlLimite.value, 10);
+      paginaActual = 1;
+      procesarYRenderizarTabla();
+    });
+
+    // Formateo y cálculo de fecha de nacimiento y edad
+    inputFecha.addEventListener('input', (e) => {
+      let v = e.target.value.replace(/\D/g, ''); 
+      if (v.length > 2) v = v.substring(0, 2) + '/' + v.substring(2);
+      if (v.length > 5) v = v.substring(0, 5) + '/' + v.substring(5, 9);
+      e.target.value = v;
+      if (v.length === 10) calcularEdadAutomatica(v);
+      else inputEdad.value = ""; 
+    });
+
     function calcularEdadAutomatica(fechaTexto) {
       const partes = fechaTexto.split('/');
       const dia = parseInt(partes[0], 10);
-      const mes = parseInt(partes[1], 10) - 1;
+      const mes = parseInt(partes[1], 10) - 1; 
       const ano = parseInt(partes[2], 10);
 
       if (isNaN(dia) || isNaN(mes) || isNaN(ano) || ano < 1900 || mes < 0 || mes > 11 || dia < 1 || dia > 31) {
@@ -264,316 +266,264 @@
       let edadCalculada = hoy.getFullYear() - cumpleanos.getFullYear();
       const m = hoy.getMonth() - cumpleanos.getMonth();
 
-      if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) {
-        edadCalculada--;
+      if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) { 
+        edadCalculada--; 
       }
 
       inputEdad.value = edadCalculada >= 0 ? edadCalculada : "";
     }
 
-    // 2. OBTENER DATOS DESDE APPS SCRIPT (O MODALIDAD DE PRUEBA LOCAL)
-    function cargarDatosIniciales() {
-      document.getElementById('cargaPrincipal').classList.remove('hidden');
-      document.getElementById('contenedorTabla').classList.add('hidden');
+    // Obtener los datos generales desde Google Sheets
+    async function cargarPantallaPrincipal() {
+      try {
+        cargaPrincipal.classList.remove('hidden');
+        cargaPrincipal.textContent = "Sincronizando con Google Sheets...";
+        contenedorTabla.classList.add('hidden');
 
-      if (typeof google !== 'undefined' && google.script) {
-        google.script.run
-          .withSuccessHandler(procesarRespuestaInicial)
-          .withFailureHandler(mostrarErrorGlobal)
-          .obtenerListaTitulares();
-      } else {
-        // MOCK DATA DE PRUEBA SI SE ABRE LOCALMENTE SIN APPS SCRIPT
-        setTimeout(() => {
-          const mockData = [
-            { nombre: "Juan Pérez", totalRegistros: 2 },
-            { nombre: "María García", totalRegistros: 0 },
-            { nombre: "Carlos Rodríguez", totalRegistros: 1 }
-          ];
-          procesarRespuestaInicial(mockData);
-        }, 800);
-      }
-    }
-
-    function procesarRespuestaInicial(data) {
-      datosTitulares = data;
-      titularesFiltrados = [...datosTitulares];
-      
-      // Llenar combo desplegable del formulario
-      selectTitular.innerHTML = '<option value="">-- Seleccionar Titular --</option>';
-      datosTitulares.forEach(t => {
-        const option = document.createElement('option');
-        option.value = t.nombre;
-        option.textContent = t.nombre;
-        selectTitular.appendChild(option);
-      });
-
-      document.getElementById('cargaPrincipal').classList.add('hidden');
-      document.getElementById('contenedorTabla').classList.remove('hidden');
-      renderizarTabla();
-    }
-
-    // 3. RENDERIZAR TABLA Y PAGINACIÓN
-    function renderizarTabla() {
-      const tbody = document.getElementById('cuerpoTitulares');
-      tbody.innerHTML = '';
-
-      const total = titularesFiltrados.length;
-      let inicio = 0;
-      let fin = total;
-
-      if (registrosPorPagina !== -1) {
-        inicio = (paginaActual - 1) * registrosPorPagina;
-        fin = Math.min(inicio + registrosPorPagina, total);
-      }
-
-      const paginados = titularesFiltrados.slice(inicio, fin);
-
-      if (paginados.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">No se encontraron registros.</td></tr>';
-      } else {
-        paginados.forEach(t => {
-          const tr = document.createElement('tr');
-          const badgeClass = t.totalRegistros > 0 ? 'badge' : 'badge badge-vacio';
-          
-          tr.innerHTML = `
-            <td><strong>${t.nombre}</strong></td>
-            <td style="text-align: center;"><span class="${badgeClass}">${t.totalRegistros}</span></td>
-            <td>
-              <div class="acciones-td">
-                <button class="btn btn-main" onclick="abrirFormularioNuevo('${t.nombre}')">➕ Agregar</button>
-                <button class="btn btn-info" onclick="abrirModalRegistros('${t.nombre}')">👁️ Ver (${t.totalRegistros})</button>
-              </div>
-            </td>
-          `;
-          tbody.appendChild(tr);
+        const respuesta = await fetch(WEB_APP_URL);
+        const res = await respuesta.json();
+        
+        datosOriginales = res.datos || [];
+        datosFiltrados = [...datosOriginales];
+        
+        selectTitular.innerHTML = '<option value="">-- Seleccione un Titular --</option>';
+        datosOriginales.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t.nombre; 
+          opt.textContent = t.nombre;
+          selectTitular.appendChild(opt);
         });
-      }
 
-      // Información de registros visibles
-      document.getElementById('infoTabla').textContent = `Mostrando ${total === 0 ? 0 : inicio + 1} a ${fin} de ${total} registros`;
-      construirPaginacion(total);
-    }
+        procesarYRenderizarTabla();
+        
+        cargaPrincipal.classList.add('hidden');
+        contenedorTabla.classList.remove('hidden');
 
-    function construirPaginacion(totalRegistros) {
-      const contenedorPaginas = document.getElementById('paginacionTabla');
-      contenedorPaginas.innerHTML = '';
-
-      if (registrosPorPagina === -1 || totalRegistros <= registrosPorPagina) return;
-
-      const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
-
-      // Botón Anterior
-      const btnAnt = document.createElement('a');
-      btnAnt.className = `paginate_button ${paginaActual === 1 ? 'disabled' : ''}`;
-      btnAnt.textContent = 'Anterior';
-      btnAnt.onclick = () => { if (paginaActual > 1) { paginaActual--; renderizarTabla(); } };
-      contenedorPaginas.appendChild(btnAnt);
-
-      // Botones de Páginas
-      for (let i = 1; i <= totalPaginas; i++) {
-        const btnPage = document.createElement('a');
-        btnPage.className = `paginate_button ${i === paginaActual ? 'current' : ''}`;
-        btnPage.textContent = i;
-        btnPage.onclick = () => { paginaActual = i; renderizarTabla(); };
-        contenedorPaginas.appendChild(btnPage);
-      }
-
-      // Botón Siguiente
-      const btnSig = document.createElement('a');
-      btnSig.className = `paginate_button ${paginaActual === totalPaginas ? 'disabled' : ''}`;
-      btnSig.textContent = 'Siguiente';
-      btnSig.onclick = () => { if (paginaActual < totalPaginas) { paginaActual++; renderizarTabla(); } };
-      contenedorPaginas.appendChild(btnSig);
-    }
-
-    // 4. ABRIR MODAL Y VER REGISTROS
-    function abrirModalRegistros(nombreTitular) {
-      document.getElementById('modalTitulo').textContent = `Registros Asignados a: ${nombreTitular}`;
-      document.getElementById('cuerpoModal').innerHTML = '<div class="status-msg">Cargando registros...</div>';
-      modal.classList.remove('hidden');
-
-      if (typeof google !== 'undefined' && google.script) {
-        google.script.run
-          .withSuccessHandler((registros) => renderizarTablaModal(registros, nombreTitular))
-          .withFailureHandler((err) => {
-            document.getElementById('cuerpoModal').innerHTML = `<span style="color:red;">Error: ${err.message}</span>`;
-          })
-          .obtenerRegistrosPorTitular(nombreTitular);
-      } else {
-        // Mock data para probar la UI
-        setTimeout(() => {
-          const mockRegistros = [
-            { numFila: 2, titular: nombreTitular, nombre: "Asistente Ejemplo 1", fechaNacimiento: "15/05/2010", edad: 16, restriccion: "Ninguna", observaciones: "Sin comentarios" },
-            { numFila: 3, titular: nombreTitular, nombre: "Asistente Ejemplo 2", fechaNacimiento: "20/08/2015", edad: 11, restriccion: "Vegetariano", observaciones: "Alergia a mani" }
-          ];
-          renderizarTablaModal(mockRegistros, nombreTitular);
-        }, 500);
+      } catch (error) {
+        cargaPrincipal.textContent = "Error al conectar con Google Sheets. Revisa la URL ingresada.";
       }
     }
 
-    function renderizarTablaModal(registros, nombreTitular) {
-      registrosModalActuales = registros;
-      const contenedor = document.getElementById('cuerpoModal');
+    function procesarYRenderizarTabla() {
+      cuerpoTitulares.innerHTML = "";
+      const totalRegistros = datosFiltrados.length;
+      
+      let limite = registrosPorPagina === -1 ? totalRegistros : registrosPorPagina;
+      let inicio = (paginaActual - 1) * limite;
+      let fin = inicio + limite;
+      if (fin > totalRegistros) fin = totalRegistros;
+      
+      const datosPagina = datosFiltrados.slice(inicio, fin);
 
-      if (!registros || registros.length === 0) {
-        contenedor.innerHTML = '<p style="text-align:center; padding:15px; color:#6c757d;">No hay asistentes registrados para este titular.</p>';
+      if (datosPagina.length === 0) {
+        cuerpoTitulares.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#718096;padding:15px;font-size:13px;">No se encontraron resultados</td></tr>`;
+        infoTabla.textContent = "Mostrando 0 a 0 de 0 registros";
+        paginacionTabla.innerHTML = "";
         return;
       }
 
-      let html = `
-        <table class="dataTable" style="margin-top:0;">
-          <thead>
-            <tr>
-              <th>Asistente</th>
-              <th>Fecha Nac.</th>
-              <th>Edad</th>
-              <th>Restricción</th>
-              <th>Observaciones</th>
-              <th style="text-align:center;">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-      `;
-
-      registros.forEach(r => {
-        html += `
-          <tr>
-            <td><strong>${r.nombre}</strong></td>
-            <td>${r.fechaNacimiento}</td>
-            <td>${r.edad} años</td>
-            <td>${r.restriccion}</td>
-            <td>${r.observaciones || '-'}</td>
-            <td style="text-align:center;">
-              <div class="acciones-td" style="justify-content:center;">
-                <button class="btn btn-info" onclick="prepararEdicion(${r.numFila})">✏️ Editar</button>
-                <button class="btn btn-danger" onclick="eliminarRegistro(${r.numFila}, '${nombreTitular}')">🗑️ Eliminar</button>
-              </div>
-            </td>
-          </tr>
+      datosPagina.forEach(titular => {
+        const fila = document.createElement('tr');
+        const tieneInvitados = titular.cantidad > 0;
+        fila.innerHTML = `
+          <td>${titular.nombre}</td>
+          <td style="text-align: center;"><span class="badge ${tieneInvitados ? '' : 'badge-vacio'}">${titular.cantidad}</span></td>
+          <td style="text-align: right;">
+            <div class="acciones-td">
+              <button class="btn btn-main" onclick="irAAgregarConTitular('${titular.nombre.replace(/'/g, "\\'")}')">➕ Agregar</button>
+              <button class="btn btn-info" onclick="verInvitados('${titular.nombre.replace(/'/g, "\\'")}')">👁️ Ver</button>
+            </div>
+          </td>
         `;
+        cuerpoTitulares.appendChild(fila);
       });
 
-      html += '</tbody></table>';
-      contenedor.innerHTML = html;
+      infoTabla.textContent = `Mostrando ${totalRegistros === 0 ? 0 : inicio + 1} a ${fin} de ${totalRegistros} titulares (filtrado de ${datosOriginales.length} totales)`;
+      renderizarPaginacion(totalRegistros, limite);
     }
 
-    // 5. EDITAR REGISTRO
-    function prepararEdicion(numFila) {
-      const registro = registrosModalActuales.find(r => r.numFila === numFila);
-      if (!registro) return;
+    function renderizarPaginacion(total, limite) {
+      paginacionTabla.innerHTML = "";
+      const paginasTotales = Math.ceil(total / limite);
+      if (paginasTotales <= 1) return;
 
-      document.getElementById('idFilaEditando').value = registro.numFila;
-      selectTitular.value = registro.titular;
-      document.getElementById('nombreasistente').value = registro.nombre;
-      inputFecha.value = registro.fechaNacimiento;
-      inputEdad.value = registro.edad;
-      document.getElementById('restriccionalimentaria').value = registro.restriccion;
-      document.getElementById('observaciones').value = registro.observaciones || '';
+      const btnAnt = document.createElement('span');
+      btnAnt.className = `paginate_button ${paginaActual === 1 ? 'disabled' : ''}`;
+      btnAnt.textContent = "Anterior";
+      if (paginaActual > 1) {
+        btnAnt.onclick = () => { paginaActual--; procesarYRenderizarTabla(); };
+      }
+      paginacionTabla.appendChild(btnAnt);
 
-      // Cambiar interfaz a modo "Editar"
-      document.getElementById('tituloFormulario').textContent = 'Editar Registro de Asistente';
-      document.getElementById('btnEnviar').textContent = '🔄 Actualizar Registro';
+      for (let i = 1; i <= paginasTotales; i++) {
+        const btnPag = document.createElement('span');
+        btnPag.className = `paginate_button ${paginaActual === i ? 'current' : ''}`;
+        btnPag.textContent = i;
+        btnPag.onclick = () => { paginaActual = i; procesarYRenderizarTabla(); };
+        paginacionTabla.appendChild(btnPag);
+      }
 
-      modal.classList.add('hidden');
-      mostrarFormulario();
+      const btnSig = document.createElement('span');
+      btnSig.className = `paginate_button ${paginaActual === paginasTotales ? 'disabled' : ''}`;
+      btnSig.textContent = "Siguiente";
+      if (paginaActual < paginasTotales) {
+        btnSig.onclick = () => { paginaActual++; procesarYRenderizarTabla(); };
+      }
+      paginacionTabla.appendChild(btnSig);
     }
 
-    // 6. ELIMINAR REGISTRO
-    function eliminarRegistro(numFila, nombreTitular) {
-      if (confirm('¿Estás seguro de que deseas eliminar este asistente? Esta acción modificará tu Google Sheet.')) {
-        if (typeof google !== 'undefined' && google.script) {
-          google.script.run
-            .withSuccessHandler((res) => {
-              alert(res);
-              abrirModalRegistros(nombreTitular);
-              cargarDatosIniciales();
-            })
-            .withFailureHandler((err) => alert('Error: ' + err.message))
-            .eliminarRegistroEnSheet(numFila);
-        } else {
-          alert('Modo Local: Registro ' + numFila + ' eliminado ficticiamente.');
-          registrosModalActuales = registrosModalActuales.filter(r => r.numFila !== numFila);
-          renderizarTablaModal(registrosModalActuales, nombreTitular);
+    // Modal para consultar e interactuar con la lista de asistentes
+    async function verInvitados(nombreTitular) {
+      titularActualModal = nombreTitular;
+      document.getElementById('modalTitulo').innerHTML = `Invitados de: <span style="color:#007bff; font-weight:normal;">${nombreTitular}</span>`;
+      const cuerpoModal = document.getElementById('cuerpoModal');
+      cuerpoModal.innerHTML = "Cargando registros...";
+      modalInvitados.classList.remove('hidden');
+
+      try {
+        const respuesta = await fetch(`${WEB_APP_URL}?titular=${encodeURIComponent(nombreTitular)}`);
+        const res = await respuesta.json();
+
+        if (!res.invitados || res.invitados.length === 0) {
+          cuerpoModal.innerHTML = "<p style='text-align:center;color:#718096;padding:10px;font-size:13px;'>Sin invitados registrados.</p>";
+          return;
         }
+
+        let htmlTabla = `
+          <table style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="background:#f8f9fa;">
+                <th style="padding:8px; border-bottom:2px solid #cbd5e0; font-size:12px; color:#5a6c7d;">Asistente / Edad</th>
+                <th style="padding:8px; border-bottom:2px solid #cbd5e0; font-size:12px; color:#5a6c7d;">Fecha Nacimiento</th>
+                <th style="padding:8px; border-bottom:2px solid #cbd5e0; font-size:12px; color:#5a6c7d;">Restricción</th>
+                <th style="padding:8px; border-bottom:2px solid #cbd5e0; font-size:12px; color:#5a6c7d; text-align:right;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>`;
+            
+        res.invitados.forEach(inv => {
+          let fNacimientoStr = inv.fechanacimiento || "No registrada";
+          
+          if (fNacimientoStr.includes("T")) {
+            const partesIso = fNacimientoStr.split("T")[0].split("-");
+            if(partesIso.length === 3) fNacimientoStr = `${partesIso[2]}/${partesIso[1]}/${partesIso[0]}`;
+          }
+
+          const jsonInvData = JSON.stringify(inv).replace(/'/g, "&#39;");
+
+          htmlTabla += `
+            <tr>
+              <td style="padding:8px; border-bottom:1px solid #eef2f5; font-size:13px;">
+                <strong>${inv.nombreasistente}</strong><br>
+                <small style="color:#718096">Edad: ${inv.edad} años</small>
+              </td>
+              <td style="padding:8px; border-bottom:1px solid #eef2f5; font-size:13px;"><code>${fNacimientoStr}</code></td>
+              <td style="padding:8px; border-bottom:1px solid #eef2f5; font-size:13px;">
+                ${inv.restriccionalimentaria}
+                ${inv.observaciones ? `<br><small style="color:#e53e3e">Obs: ${inv.observaciones}</small>` : ''}
+              </td>
+              <td style="padding:8px; border-bottom:1px solid #eef2f5; font-size:13px; text-align:right;">
+                <div style="display:flex; justify-content:flex-end; gap:4px;">
+                  <button class="btn btn-warning" onclick='prepararEdicion(${jsonInvData})'>✏️ Editar</button>
+                  <button class="btn btn-danger" onclick="confirmarEliminacion(${inv.numFila}, '${inv.nombreasistente.replace(/'/g, "\\'")}')">🗑️ Borrar</button>
+                </div>
+              </td>
+            </tr>`;
+        });
+        
+        htmlTabla += `</tbody></table>`;
+        cuerpoModal.innerHTML = htmlTabla;
+      } catch (e) {
+        cuerpoModal.innerHTML = "Error al obtener la lista de invitados.";
       }
     }
 
-    // 7. GUARDAR O ACTUALIZAR
-    function guardarOActualizarFormulario(e) {
-      e.preventDefault();
-      const msg = document.getElementById('mensajeForm');
-      msg.textContent = "Procesando...";
-      msg.style.color = "#007bff";
+    function prepararEdicion(invitado) {
+      modalInvitados.classList.add('hidden');
+      vistaPrincipal.classList.add('hidden');
+      vistaFormulario.classList.remove('hidden');
+      mensajeForm.textContent = "";
 
-      const numFila = document.getElementById('idFilaEditando').value;
+      tituloFormulario.textContent = "Editar Asistente";
+      inputNumFila.value = invitado.numFila;
+      selectTitular.value = invitado.titular;
+      selectTitular.disabled = true;
+      
+      document.getElementById('nombreasistente').value = invitado.nombreasistente;
+      document.getElementById('fechanacimiento').value = invitado.fechanacimiento;
+      document.getElementById('edad').value = invitado.edad;
+      document.getElementById('restriccionalimentaria').value = invitado.restriccionalimentaria;
+      document.getElementById('observaciones').value = invitado.observaciones || "";
+    }
+
+    async function confirmarEliminacion(numFila, nombreAsistente) {
+      if (!confirm(`¿Deseas eliminar el registro de "${nombreAsistente}"?`)) return;
+
+      try {
+        const cuerpoModal = document.getElementById('cuerpoModal');
+        cuerpoModal.innerHTML = "Eliminando registro...";
+
+        await fetch(WEB_APP_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ accion: "ELIMINAR", numFila: numFila })
+        });
+
+        verInvitados(titularActualModal);
+      } catch (e) {
+        alert("Error al intentar eliminar el registro.");
+      }
+    }
+
+    // Guardar nuevo registro o actualización
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (inputFecha.value.length < 10) { alert("Ingresa una fecha válida en formato DD/MM/YYYY"); return; }
+      
+      const btnEnviar = document.getElementById('btnEnviar');
+      btnEnviar.disabled = true;
+      mensajeForm.textContent = "Guardando cambios en Google Sheets...";
+
+      const numFila = inputNumFila.value;
       const payload = {
+        accion: numFila ? "ACTUALIZAR" : "GUARDAR",
         numFila: numFila ? parseInt(numFila, 10) : null,
         titular: selectTitular.value,
-        nombre: document.getElementById('nombreasistente').value,
-        fechaNacimiento: inputFecha.value,
-        edad: inputEdad.value,
-        restriccion: document.getElementById('restriccionalimentaria').value,
+        nombreasistente: document.getElementById('nombreasistente').value,
+        fechanacimiento: inputFecha.value,
+        edad: parseInt(inputEdad.value, 10),
+        restriccionalimentaria: document.getElementById('restriccionalimentaria').value,
         observaciones: document.getElementById('observaciones').value
       };
 
-      if (typeof google !== 'undefined' && google.script) {
-        google.script.run
-          .withSuccessHandler((res) => {
-            msg.textContent = res;
-            msg.style.color = "green";
-            setTimeout(() => {
-              limpiarFormulario();
-              mostrarListaPrincipal();
-              cargarDatosIniciales();
-            }, 1200);
-          })
-          .withFailureHandler((err) => {
-            msg.textContent = "Error: " + err.message;
-            msg.style.color = "red";
-          })
-          .guardarOActualizarRegistro(payload);
-      } else {
+      try {
+        await fetch(WEB_APP_URL, { 
+          method: "POST", 
+          headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+          body: JSON.stringify(payload) 
+        });
+        
+        mensajeForm.textContent = "¡Operación completada con éxito!";
+        mensajeForm.style.color = "green";
+        
         setTimeout(() => {
-          msg.textContent = numFila ? "¡Registro actualizado con éxito (Local)!" : "¡Registro guardado con éxito (Local)!";
-          msg.style.color = "green";
-          setTimeout(() => {
-            limpiarFormulario();
-            mostrarListaPrincipal();
-          }, 1000);
-        }, 600);
+          form.reset();
+          inputNumFila.value = "";
+          selectTitular.disabled = false;
+          vistaFormulario.classList.add('hidden');
+          vistaPrincipal.classList.remove('hidden');
+          cargarPantallaPrincipal();
+        }, 1200);
+
+      } catch (error) {
+        mensajeForm.textContent = "Error al procesar los datos.";
+        mensajeForm.style.color = "red";
+      } finally {
+        btnEnviar.disabled = false;
       }
-    }
+    });
 
-    // NAVEGACIÓN Y LIMPIEZA
-    function abrirFormularioNuevo(nombreTitular) {
-      limpiarFormulario();
-      selectTitular.value = nombreTitular;
-      mostrarFormulario();
-    }
-
-    function mostrarFormulario() {
-      document.getElementById('vistaPrincipal').classList.add('hidden');
-      document.getElementById('vistaFormulario').classList.remove('hidden');
-    }
-
-    function mostrarListaPrincipal() {
-      document.getElementById('vistaFormulario').classList.add('hidden');
-      document.getElementById('vistaPrincipal').classList.remove('hidden');
-      limpiarFormulario();
-    }
-
-    function limpiarFormulario() {
-      form.reset();
-      document.getElementById('idFilaEditando').value = '';
-      document.getElementById('mensajeForm').textContent = '';
-      document.getElementById('tituloFormulario').textContent = 'Nuevo Registro de Asistente';
-      document.getElementById('btnEnviar').textContent = '💾 Guardar Registro';
-    }
-
-    function mostrarErrorGlobal(err) {
-      document.getElementById('cargaPrincipal').textContent = "Error al conectar con Google Sheets: " + err.message;
-      document.getElementById('cargaPrincipal').style.color = "red";
-    }
+    window.addEventListener('DOMContentLoaded', cargarPantallaPrincipal);
   </script>
 </body>
 </html>
