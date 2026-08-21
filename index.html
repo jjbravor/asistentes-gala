@@ -169,7 +169,7 @@
 
   <script>
     // URL DE TU APLICACIÓN WEB DE GOOGLE APPS SCRIPT
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzUqLAOxwGVfRAV9hhUe_jIc3l3sA07IVAXdOEIagaSWnzSr9W-_kI6lxBH2OmTXKTd/exec";
+    const WEB_APP_URL = "REEMPLAZAR_CON_TU_URL_DE_APPS_SCRIPT";
 
     const vistaPrincipal = document.getElementById('vistaPrincipal');
     const vistaFormulario = document.getElementById('vistaFormulario');
@@ -217,8 +217,17 @@
       cargarPantallaPrincipal(); 
     });
 
+    // CERRAR MODAL Y REFRESCAR TABLA
     document.getElementById('btnCerrarModal').addEventListener('click', () => {
       modalInvitados.classList.add('hidden');
+      cargarPantallaPrincipal();
+    });
+
+    modalInvitados.addEventListener('click', (e) => {
+      if (e.target === modalInvitados) {
+        modalInvitados.classList.add('hidden');
+        cargarPantallaPrincipal();
+      }
     });
 
     buscadorManual.addEventListener('input', () => {
@@ -234,7 +243,6 @@
       procesarYRenderizarTabla();
     });
 
-    // Formateo y cálculo de fecha de nacimiento y edad
     inputFecha.addEventListener('input', (e) => {
       let v = e.target.value.replace(/\D/g, ''); 
       if (v.length > 2) v = v.substring(0, 2) + '/' + v.substring(2);
@@ -273,7 +281,6 @@
       inputEdad.value = edadCalculada >= 0 ? edadCalculada : "";
     }
 
-    // Obtener los datos generales desde Google Sheets
     async function cargarPantallaPrincipal() {
       try {
         cargaPrincipal.classList.remove('hidden');
@@ -372,7 +379,6 @@
       paginacionTabla.appendChild(btnSig);
     }
 
-    // Modal para consultar e interactuar con la lista de asistentes
     async function verInvitados(nombreTitular) {
       titularActualModal = nombreTitular;
       document.getElementById('modalTitulo').innerHTML = `Invitados de: <span style="color:#007bff; font-weight:normal;">${nombreTitular}</span>`;
@@ -456,6 +462,7 @@
       document.getElementById('observaciones').value = invitado.observaciones || "";
     }
 
+    // ELIMINAR REGISTRO Y REFRESCAR TABLA EN SEGUNDO PLANO
     async function confirmarEliminacion(numFila, nombreAsistente) {
       if (!confirm(`¿Deseas eliminar el registro de "${nombreAsistente}"?`)) return;
 
@@ -469,13 +476,24 @@
           body: JSON.stringify({ accion: "ELIMINAR", numFila: numFila })
         });
 
-        verInvitados(titularActualModal);
+        // Refresca la ventana modal actual
+        await verInvitados(titularActualModal);
+        
+        // Refresca silenciosamente el listado principal de fondo
+        fetch(WEB_APP_URL)
+          .then(res => res.json())
+          .then(res => {
+            datosOriginales = res.datos || [];
+            const termino = buscadorManual.value.toLowerCase().trim();
+            datosFiltrados = datosOriginales.filter(t => t.nombre.toLowerCase().includes(termino));
+            procesarYRenderizarTabla();
+          });
+
       } catch (e) {
         alert("Error al intentar eliminar el registro.");
       }
     }
 
-    // Guardar nuevo registro o actualización
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (inputFecha.value.length < 10) { alert("Ingresa una fecha válida en formato DD/MM/YYYY"); return; }
