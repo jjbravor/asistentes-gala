@@ -68,6 +68,9 @@
     label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 13px; color: #4a5568; }
     select, input, textarea { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e0; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
     
+    /* Estilo para select bloqueado */
+    select:disabled { background-color: #e2e8f0; color: #4a5568; cursor: not-allowed; }
+
     /* Modal Flotante */
     .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: flex; justify-content: center; align-items: center; z-index: 1000; }
     .modal-content { background: white; padding: 20px; border-radius: 10px; max-width: 850px; width: 90%; max-height: 80vh; overflow-y: auto; box-sizing: border-box; }
@@ -230,6 +233,7 @@
     let registrosPorPagina = 10;
     let titularActualModal = "";
 
+    // IR A AGREGAR CON TITULAR BLOQUEADO
     function irAAgregarConTitular(nombreTitular) {
       modalInvitados.classList.add('hidden');
       vistaPrincipal.classList.add('hidden');
@@ -239,36 +243,26 @@
       form.reset();
       inputNumFila.value = "";
       tituloFormulario.textContent = "Nuevo Registro de Asistente";
+      
       selectTitular.value = nombreTitular;
-      selectTitular.disabled = false;
+      selectTitular.disabled = true; // Select bloqueado
       document.getElementById('restriccionalimentaria').value = "Ninguna";
     }
 
-    // BOTÓN NUEVO: LIMPIA EL FORMULARIO MANTENIENDO EL TITULAR O PERMITIENDO CAMBIARLO
-    /*btnNuevo.addEventListener('click', () => {
+    // BOTÓN NUEVO DENTRO DEL FORMULARIO (MANTIENE EL TITULAR BLOQUEADO)
+    btnNuevo.addEventListener('click', () => {
       const titularPrevio = selectTitular.value;
       form.reset();
       inputNumFila.value = "";
-      selectTitular.disabled = false;
+      
       selectTitular.value = titularPrevio;
+      selectTitular.disabled = true; // Select bloqueado
+      
       document.getElementById('restriccionalimentaria').value = "Ninguna";
       tituloFormulario.textContent = "Nuevo Registro de Asistente";
       mensajeForm.textContent = "";
     });
- */
-    btnNuevo.addEventListener('click', () => {
-  const titularPrevio = selectTitular.value;
-  form.reset();
-  inputNumFila.value = "";
-  
-  // Mantiene seleccionado el titular y lo deja BLOQUEADO
-  selectTitular.value = titularPrevio;
-  selectTitular.disabled = true; 
-  
-  document.getElementById('restriccionalimentaria').value = "Ninguna";
-  tituloFormulario.textContent = "Nuevo Registro de Asistente";
-  mensajeForm.textContent = "";
-});
+
     // BOTÓN VOLVER: RECARGA LA LISTA Y EL CONTADOR GENERAL
     document.getElementById('btnVolver').addEventListener('click', () => {
       vistaFormulario.classList.add('hidden');
@@ -511,6 +505,7 @@
       }
     }
 
+    // PREPARAR EDICIÓN (MANTIENE EL TITULAR BLOQUEADO)
     function prepararEdicion(invitado) {
       modalInvitados.classList.add('hidden');
       vistaPrincipal.classList.add('hidden');
@@ -520,7 +515,7 @@
       tituloFormulario.textContent = "Editar Asistente";
       inputNumFila.value = invitado.numFila;
       selectTitular.value = invitado.titular;
-      selectTitular.disabled = true;
+      selectTitular.disabled = true; // Select bloqueado
       
       document.getElementById('nombreasistente').value = invitado.nombreasistente;
       document.getElementById('fechanacimiento').value = invitado.fechanacimiento;
