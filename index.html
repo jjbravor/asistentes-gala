@@ -254,20 +254,48 @@
       else inputEdad.value = ""; 
     });
 
-    function calcularEdadAutomatica(fechaTexto) {
-      const partes = fechaTexto.split('/');
-      const dia = parseInt(partes, 10);
-      const mes = parseInt(partes, 10) - 1;
-      const ano = parseInt(partes, 10);
-      if (isNaN(dia) || isNaN(mes) || isNaN(ano) || ano < 1900 || mes > 11 || dia > 31) return;
-      
-      const hoy = new Date();
-      const cumpleanos = new Date(ano, mes, dia);
-      let edadCalculada = hoy.getFullYear() - cumpleanos.getFullYear();
-      const m = hoy.getMonth() - cumpleanos.getMonth();
-      if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) { edadCalculada--; }
-      inputEdad.value = edadCalculada >= 0 ? edadCalculada : "";
-    }
+ inputFecha.addEventListener('input', (e) => {
+  let v = e.target.value.replace(/\D/g, ''); 
+  if (v.length > 2) v = v.substring(0, 2) + '/' + v.substring(2);
+  if (v.length > 5) v = v.substring(0, 5) + '/' + v.substring(5, 9);
+  e.target.value = v;
+
+  if (v.length === 10) calcularEdadAutomatica(v);
+  else inputEdad.value = ""; 
+});
+
+function calcularEdadAutomatica(fechaTexto) {
+  const partes = fechaTexto.split('/');
+  
+  // CORRECCIÓN: Agregar los índices [0], [1] y [2]
+  const dia = parseInt(partes[0], 10);
+  const mes = parseInt(partes[1], 10) - 1; // Los meses en JS van de 0 a 11
+  const ano = parseInt(partes[2], 10);
+
+  // Validación básica de la fecha
+  if (isNaN(dia) || isNaN(mes) || isNaN(ano) || ano < 1900 || mes < 0 || mes > 11 || dia < 1 || dia > 31) {
+    inputEdad.value = "";
+    return;
+  }
+
+  const hoy = new Date();
+  const cumpleanos = new Date(ano, mes, dia);
+
+  // Validar si la fecha ingresada es válida en el calendario (ej: no permitir 31/02)
+  if (cumpleanos.getFullYear() !== ano || cumpleanos.getMonth() !== mes || cumpleanos.getDate() !== dia) {
+    inputEdad.value = "";
+    return;
+  }
+
+  let edadCalculada = hoy.getFullYear() - cumpleanos.getFullYear();
+  const m = hoy.getMonth() - cumpleanos.getMonth();
+
+  if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) { 
+    edadCalculada--; 
+  }
+
+  inputEdad.value = edadCalculada >= 0 ? edadCalculada : "";
+}
     async function cargarPantallaPrincipal() {
       try {
         cargaPrincipal.classList.remove('hidden');
