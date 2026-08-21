@@ -254,15 +254,7 @@
       else inputEdad.value = ""; 
     });
 
- inputFecha.addEventListener('input', (e) => {
-  let v = e.target.value.replace(/\D/g, ''); 
-  if (v.length > 2) v = v.substring(0, 2) + '/' + v.substring(2);
-  if (v.length > 5) v = v.substring(0, 5) + '/' + v.substring(5, 9);
-  e.target.value = v;
-
-  if (v.length === 10) calcularEdadAutomatica(v);
-  else inputEdad.value = ""; 
-});
+ 
 
 function calcularEdadAutomatica(fechaTexto) {
   const partes = fechaTexto.split('/');
