@@ -50,7 +50,7 @@
     .btn { padding: 6px 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 13px; transition: background 0.2s; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
     .btn-main { background-color: #007bff; color: white; padding: 4px 8px; font-size: 12px; }
     .btn-main:hover { background-color: #0056b3; }
-    .btn-success { background-color: #28a745; color: white; width: 100%; padding: 12px; font-size: 15px; justify-content: center; }
+    .btn-success { background-color: #28a745; color: white; padding: 12px; font-size: 15px; justify-content: center; flex: 1; }
     .btn-secondary { background-color: #6c757d; color: white; }
     .btn-info { background-color: #17a2b8; color: white; padding: 4px 8px; font-size: 12px; }
     .btn-info:hover { background-color: #138496; }
@@ -58,6 +58,9 @@
     .btn-danger { background-color: #dc3545; color: white; padding: 3px 6px; font-size: 11px; }
     .acciones-td { display: flex; justify-content: flex-end; gap: 6px; }
     
+    /* Grupo de botones del formulario */
+    .btn-group-form { display: flex; gap: 10px; margin-top: 15px; }
+
     #contenedorTabla { width: 100% !important; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; }
     .badge { background-color: #007bff; color: white; padding: 2px 8px; border-radius: 50px; font-size: 11px; font-weight: bold; }
     .badge-vacio { background-color: #6c757d; }
@@ -76,6 +79,7 @@
       .header-row { flex-direction: column; align-items: flex-start; gap: 8px; }
       .dataTables_wrapper .dataTables_filter { float: none; text-align: left; margin-bottom: 10px; }
       .dataTables_wrapper .dataTables_filter input { width: 100%; margin-left: 0; margin-top: 5px; }
+      .btn-group-form { flex-direction: column; }
     }
   </style>
 </head>
@@ -175,7 +179,11 @@
         <label for="observaciones">Observaciones:</label>
         <textarea id="observaciones" rows="2" placeholder="Detalles o especificaciones..."></textarea>
       </div>
-      <button type="submit" class="btn btn-success" id="btnEnviar">💾 Guardar Registro</button>
+
+      <div class="btn-group-form">
+        <button type="submit" class="btn btn-success" id="btnEnviar">💾 Guardar Registro</button>
+        <button type="button" class="btn btn-main" id="btnNuevo" style="padding: 12px; font-size: 15px; justify-content: center; flex: 1;">➕ Nuevo Registro</button>
+      </div>
     </form>
     <div id="mensajeForm" class="status-msg"></div>
   </div>
@@ -209,6 +217,7 @@
     const mensajeForm = document.getElementById('mensajeForm');
     const tituloFormulario = document.getElementById('tituloFormulario');
     const totalAsistentesEl = document.getElementById('totalAsistentes');
+    const btnNuevo = document.getElementById('btnNuevo');
     
     const buscadorManual = document.getElementById('buscadorManual');
     const controlLimite = document.getElementById('controlLimite');
@@ -235,6 +244,19 @@
       document.getElementById('restriccionalimentaria').value = "Ninguna";
     }
 
+    // BOTÓN NUEVO: LIMPIA EL FORMULARIO MANTENIENDO EL TITULAR O PERMITIENDO CAMBIARLO
+    btnNuevo.addEventListener('click', () => {
+      const titularPrevio = selectTitular.value;
+      form.reset();
+      inputNumFila.value = "";
+      selectTitular.disabled = false;
+      selectTitular.value = titularPrevio;
+      document.getElementById('restriccionalimentaria').value = "Ninguna";
+      tituloFormulario.textContent = "Nuevo Registro de Asistente";
+      mensajeForm.textContent = "";
+    });
+
+    // BOTÓN VOLVER: RECARGA LA LISTA Y EL CONTADOR GENERAL
     document.getElementById('btnVolver').addEventListener('click', () => {
       vistaFormulario.classList.add('hidden');
       vistaPrincipal.classList.remove('hidden');
@@ -508,22 +530,13 @@
         });
 
         await verInvitados(titularActualModal);
-        
-        fetch(WEB_APP_URL)
-          .then(res => res.json())
-          .then(res => {
-            datosOriginales = res.datos || [];
-            actualizarContadorTotal(datosOriginales);
-            const termino = buscadorManual.value.toLowerCase().trim();
-            datosFiltrados = datosOriginales.filter(t => t.nombre.toLowerCase().includes(termino));
-            procesarYRenderizarTabla();
-          });
 
       } catch (e) {
         alert("Error al intentar eliminar el registro.");
       }
     }
 
+    // ENVÍO DEL FORMULARIO
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (inputFecha.value.length < 10) { alert("Ingresa una fecha válida en formato DD/MM/YYYY"); return; }
@@ -531,11 +544,14 @@
       const btnEnviar = document.getElementById('btnEnviar');
       btnEnviar.disabled = true;
       mensajeForm.textContent = "Guardando cambios en Google Sheets...";
+      mensajeForm.style.color = "#2d3748";
 
       const numFila = inputNumFila.value;
+      const esEdicion = Boolean(numFila);
+
       const payload = {
-        accion: numFila ? "ACTUALIZAR" : "GUARDAR",
-        numFila: numFila ? parseInt(numFila, 10) : null,
+        accion: esEdicion ? "ACTUALIZAR" : "GUARDAR",
+        numFila: esEdicion ? parseInt(numFila, 10) : null,
         titular: selectTitular.value,
         nombreasistente: document.getElementById('nombreasistente').value,
         fechanacimiento: inputFecha.value,
@@ -551,17 +567,8 @@
           body: JSON.stringify(payload) 
         });
         
-        mensajeForm.textContent = "¡Operación completada con éxito!";
+        mensajeForm.textContent = esEdicion ? "¡Registro actualizado correctamente!" : "¡Registro guardado con éxito!";
         mensajeForm.style.color = "green";
-        
-        setTimeout(() => {
-          form.reset();
-          inputNumFila.value = "";
-          selectTitular.disabled = false;
-          vistaFormulario.classList.add('hidden');
-          vistaPrincipal.classList.remove('hidden');
-          cargarPantallaPrincipal();
-        }, 1200);
 
       } catch (error) {
         mensajeForm.textContent = "Error al procesar los datos.";
