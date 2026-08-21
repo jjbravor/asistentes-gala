@@ -206,387 +206,393 @@
     // URL DE TU APLICACIÓN WEB DE GOOGLE APPS SCRIPT
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzUqLAOxwGVfRAV9hhUe_jIc3l3sA07IVAXdOEIagaSWnzSr9W-_kI6lxBH2OmTXKTd/exec";
 
-    const vistaPrincipal = document.getElementById('vistaPrincipal');
-    const vistaFormulario = document.getElementById('vistaFormulario');
-    const modalInvitados = document.getElementById('modalInvitados');
-    const cuerpoTitulares = document.getElementById('cuerpoTitulares');
-    const contenedorTabla = document.getElementById('contenedorTabla');
-    const cargaPrincipal = document.getElementById('cargaPrincipal');
-    const selectTitular = document.getElementById('titular');
-    const inputFecha = document.getElementById('fechanacimiento');
-    const inputEdad = document.getElementById('edad');
-    const inputNumFila = document.getElementById('numFila');
-    const form = document.getElementById('formularioRegistro');
-    const mensajeForm = document.getElementById('mensajeForm');
-    const tituloFormulario = document.getElementById('tituloFormulario');
-    const totalAsistentesEl = document.getElementById('totalAsistentes');
-    const btnNuevo = document.getElementById('btnNuevo');
+  const vistaPrincipal = document.getElementById('vistaPrincipal');
+  const vistaFormulario = document.getElementById('vistaFormulario');
+  const modalInvitados = document.getElementById('modalInvitados');
+  const cuerpoTitulares = document.getElementById('cuerpoTitulares');
+  const contenedorTabla = document.getElementById('contenedorTabla');
+  const cargaPrincipal = document.getElementById('cargaPrincipal');
+  const selectTitular = document.getElementById('titular');
+  const inputFecha = document.getElementById('fechanacimiento');
+  const inputEdad = document.getElementById('edad');
+  const inputNumFila = document.getElementById('numFila');
+  const form = document.getElementById('formularioRegistro');
+  const mensajeForm = document.getElementById('mensajeForm');
+  const tituloFormulario = document.getElementById('tituloFormulario');
+  const totalAsistentesEl = document.getElementById('totalAsistentes');
+  const btnNuevo = document.getElementById('btnNuevo');
+  
+  const buscadorManual = document.getElementById('buscadorManual');
+  const controlLimite = document.getElementById('controlLimite');
+  const infoTabla = document.getElementById('infoTabla');
+  const paginacionTabla = document.getElementById('paginacionTabla');
+
+  let datosOriginales = [];
+  let datosFiltrados = [];
+  let paginaActual = 1;
+  let registrosPorPagina = 10;
+  let titularActualModal = "";
+
+  // 1. FUNCIÓN AL PRESIONAR "➕ AGREGAR" DESDE LA LISTA GENERAL O DESDE EL MODAL
+  window.irAAgregarConTitular = function(nombreTitular) {
+    modalInvitados.classList.add('hidden');
+    vistaPrincipal.classList.add('hidden');
+    vistaFormulario.classList.remove('hidden');
+    mensajeForm.textContent = "";
     
-    const buscadorManual = document.getElementById('buscadorManual');
-    const controlLimite = document.getElementById('controlLimite');
-    const infoTabla = document.getElementById('infoTabla');
-    const paginacionTabla = document.getElementById('paginacionTabla');
+    form.reset();
+    inputNumFila.value = "";
+    tituloFormulario.textContent = "Nuevo Registro de Asistente";
+    
+    // Selecciona el titular y BLOQUEA EL SELECT INMEDIATAMENTE
+    selectTitular.value = nombreTitular;
+    selectTitular.disabled = true; 
+    
+    document.getElementById('restriccionalimentaria').value = "Ninguna";
+  };
 
-    let datosOriginales = [];
-    let datosFiltrados = [];
-    let paginaActual = 1;
-    let registrosPorPagina = 10;
-    let titularActualModal = "";
+  // 2. BOTÓN "➕ NUEVO REGISTRO" DENTRO DEL FORMULARIO
+  btnNuevo.addEventListener('click', () => {
+    const titularPrevio = selectTitular.value;
+    form.reset();
+    inputNumFila.value = "";
+    
+    // Mantiene el titular cargado y LO DEJA BLOQUEADO
+    selectTitular.value = titularPrevio;
+    selectTitular.disabled = true; 
+    
+    document.getElementById('restriccionalimentaria').value = "Ninguna";
+    tituloFormulario.textContent = "Nuevo Registro de Asistente";
+    mensajeForm.textContent = "";
+  });
 
-    // IR A AGREGAR CON TITULAR BLOQUEADO
-    function irAAgregarConTitular(nombreTitular) {
-      modalInvitados.classList.add('hidden');
-      vistaPrincipal.classList.add('hidden');
-      vistaFormulario.classList.remove('hidden');
-      mensajeForm.textContent = "";
-      
-      form.reset();
-      inputNumFila.value = "";
-      tituloFormulario.textContent = "Nuevo Registro de Asistente";
-      
-      selectTitular.value = nombreTitular;
-      selectTitular.disabled = true; // Select bloqueado
-      document.getElementById('restriccionalimentaria').value = "Ninguna";
-    }
+  // 3. PREPARAR EDICIÓN DESDE EL MODAL (TAMBIÉN BLOQUEA EL SELECT)
+  window.prepararEdicion = function(invitado) {
+    modalInvitados.classList.add('hidden');
+    vistaPrincipal.classList.add('hidden');
+    vistaFormulario.classList.remove('hidden');
+    mensajeForm.textContent = "";
 
-    // BOTÓN NUEVO DENTRO DEL FORMULARIO (MANTIENE EL TITULAR BLOQUEADO)
-    btnNuevo.addEventListener('click', () => {
-      const titularPrevio = selectTitular.value;
-      form.reset();
-      inputNumFila.value = "";
-      
-      selectTitular.value = titularPrevio;
-      selectTitular.disabled = true; // Select bloqueado
-      
-      document.getElementById('restriccionalimentaria').value = "Ninguna";
-      tituloFormulario.textContent = "Nuevo Registro de Asistente";
-      mensajeForm.textContent = "";
-    });
+    tituloFormulario.textContent = "Editar Asistente";
+    inputNumFila.value = invitado.numFila;
+    
+    selectTitular.value = invitado.titular;
+    selectTitular.disabled = true; // Select bloqueado
+    
+    document.getElementById('nombreasistente').value = invitado.nombreasistente;
+    document.getElementById('fechanacimiento').value = invitado.fechanacimiento;
+    document.getElementById('edad').value = invitado.edad;
+    document.getElementById('restriccionalimentaria').value = invitado.restriccionalimentaria;
+    document.getElementById('observaciones').value = invitado.observaciones || "";
+  };
 
-    // BOTÓN VOLVER: RECARGA LA LISTA Y EL CONTADOR GENERAL
-    document.getElementById('btnVolver').addEventListener('click', () => {
-      vistaFormulario.classList.add('hidden');
-      vistaPrincipal.classList.remove('hidden');
-      buscadorManual.value = "";
-      cargarPantallaPrincipal(); 
-    });
+  // BOTÓN VOLVER
+  document.getElementById('btnVolver').addEventListener('click', () => {
+    vistaFormulario.classList.add('hidden');
+    vistaPrincipal.classList.remove('hidden');
+    buscadorManual.value = "";
+    cargarPantallaPrincipal(); 
+  });
 
-    document.getElementById('btnCerrarModal').addEventListener('click', () => {
+  document.getElementById('btnCerrarModal').addEventListener('click', () => {
+    modalInvitados.classList.add('hidden');
+    cargarPantallaPrincipal();
+  });
+
+  modalInvitados.addEventListener('click', (e) => {
+    if (e.target === modalInvitados) {
       modalInvitados.classList.add('hidden');
       cargarPantallaPrincipal();
-    });
+    }
+  });
 
-    modalInvitados.addEventListener('click', (e) => {
-      if (e.target === modalInvitados) {
-        modalInvitados.classList.add('hidden');
-        cargarPantallaPrincipal();
-      }
-    });
+  buscadorManual.addEventListener('input', () => {
+    const termino = buscadorManual.value.toLowerCase().trim();
+    datosFiltrados = datosOriginales.filter(t => t.nombre.toLowerCase().includes(termino));
+    paginaActual = 1;
+    procesarYRenderizarTabla();
+  });
 
-    buscadorManual.addEventListener('input', () => {
-      const termino = buscadorManual.value.toLowerCase().trim();
-      datosFiltrados = datosOriginales.filter(t => t.nombre.toLowerCase().includes(termino));
-      paginaActual = 1;
-      procesarYRenderizarTabla();
-    });
+  controlLimite.addEventListener('change', () => {
+    registrosPorPagina = parseInt(controlLimite.value, 10);
+    paginaActual = 1;
+    procesarYRenderizarTabla();
+  });
 
-    controlLimite.addEventListener('change', () => {
-      registrosPorPagina = parseInt(controlLimite.value, 10);
-      paginaActual = 1;
-      procesarYRenderizarTabla();
-    });
+  inputFecha.addEventListener('input', (e) => {
+    let v = e.target.value.replace(/\D/g, ''); 
+    if (v.length > 2) v = v.substring(0, 2) + '/' + v.substring(2);
+    if (v.length > 5) v = v.substring(0, 5) + '/' + v.substring(5, 9);
+    e.target.value = v;
+    if (v.length === 10) calcularEdadAutomatica(v);
+    else inputEdad.value = ""; 
+  });
 
-    inputFecha.addEventListener('input', (e) => {
-      let v = e.target.value.replace(/\D/g, ''); 
-      if (v.length > 2) v = v.substring(0, 2) + '/' + v.substring(2);
-      if (v.length > 5) v = v.substring(0, 5) + '/' + v.substring(5, 9);
-      e.target.value = v;
-      if (v.length === 10) calcularEdadAutomatica(v);
-      else inputEdad.value = ""; 
-    });
+  function calcularEdadAutomatica(fechaTexto) {
+    const partes = fechaTexto.split('/');
+    const dia = parseInt(partes[0], 10);
+    const mes = parseInt(partes[1], 10) - 1; 
+    const ano = parseInt(partes[2], 10);
 
-    function calcularEdadAutomatica(fechaTexto) {
-      const partes = fechaTexto.split('/');
-      const dia = parseInt(partes[0], 10);
-      const mes = parseInt(partes[1], 10) - 1; 
-      const ano = parseInt(partes[2], 10);
-
-      if (isNaN(dia) || isNaN(mes) || isNaN(ano) || ano < 1900 || mes < 0 || mes > 11 || dia < 1 || dia > 31) {
-        inputEdad.value = "";
-        return;
-      }
-
-      const hoy = new Date();
-      const cumpleanos = new Date(ano, mes, dia);
-
-      if (cumpleanos.getFullYear() !== ano || cumpleanos.getMonth() !== mes || cumpleanos.getDate() !== dia) {
-        inputEdad.value = "";
-        return;
-      }
-
-      let edadCalculada = hoy.getFullYear() - cumpleanos.getFullYear();
-      const m = hoy.getMonth() - cumpleanos.getMonth();
-
-      if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) { 
-        edadCalculada--; 
-      }
-
-      inputEdad.value = edadCalculada >= 0 ? edadCalculada : "";
+    if (isNaN(dia) || isNaN(mes) || isNaN(ano) || ano < 1900 || mes < 0 || mes > 11 || dia < 1 || dia > 31) {
+      inputEdad.value = "";
+      return;
     }
 
-    // CALCULA Y ACTUALIZA EL TOTAL GENERAL DE ASISTENTES
-    function actualizarContadorTotal(datos) {
-      const sumaTotal = datos.reduce((acumulador, item) => acumulador + (item.cantidad || 0), 0);
-      totalAsistentesEl.textContent = sumaTotal;
+    const hoy = new Date();
+    const cumpleanos = new Date(ano, mes, dia);
+
+    if (cumpleanos.getFullYear() !== ano || cumpleanos.getMonth() !== mes || cumpleanos.getDate() !== dia) {
+      inputEdad.value = "";
+      return;
     }
 
-    async function cargarPantallaPrincipal() {
-      try {
-        cargaPrincipal.classList.remove('hidden');
-        cargaPrincipal.textContent = "Sincronizando con Google Sheets...";
-        contenedorTabla.classList.add('hidden');
+    let edadCalculada = hoy.getFullYear() - cumpleanos.getFullYear();
+    const m = hoy.getMonth() - cumpleanos.getMonth();
 
-        const respuesta = await fetch(WEB_APP_URL);
-        const res = await respuesta.json();
-        
-        datosOriginales = res.datos || [];
-        datosFiltrados = [...datosOriginales];
-        
-        actualizarContadorTotal(datosOriginales);
-
-        selectTitular.innerHTML = '<option value="">-- Seleccione un Titular --</option>';
-        datosOriginales.forEach(t => {
-          const opt = document.createElement('option');
-          opt.value = t.nombre; 
-          opt.textContent = t.nombre;
-          selectTitular.appendChild(opt);
-        });
-
-        procesarYRenderizarTabla();
-        
-        cargaPrincipal.classList.add('hidden');
-        contenedorTabla.classList.remove('hidden');
-
-      } catch (error) {
-        cargaPrincipal.textContent = "Error al conectar con Google Sheets. Revisa la URL ingresada.";
-      }
+    if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) { 
+      edadCalculada--; 
     }
 
-    function procesarYRenderizarTabla() {
-      cuerpoTitulares.innerHTML = "";
-      const totalRegistros = datosFiltrados.length;
+    inputEdad.value = edadCalculada >= 0 ? edadCalculada : "";
+  }
+
+  function actualizarContadorTotal(datos) {
+    const sumaTotal = datos.reduce((acumulador, item) => acumulador + (item.cantidad || 0), 0);
+    totalAsistentesEl.textContent = sumaTotal;
+  }
+
+  async function cargarPantallaPrincipal() {
+    try {
+      cargaPrincipal.classList.remove('hidden');
+      cargaPrincipal.textContent = "Sincronizando con Google Sheets...";
+      contenedorTabla.classList.add('hidden');
+
+      const respuesta = await fetch(WEB_APP_URL);
+      const res = await respuesta.json();
       
-      let limite = registrosPorPagina === -1 ? totalRegistros : registrosPorPagina;
-      let inicio = (paginaActual - 1) * limite;
-      let fin = inicio + limite;
-      if (fin > totalRegistros) fin = totalRegistros;
+      datosOriginales = res.datos || [];
+      datosFiltrados = [...datosOriginales];
       
-      const datosPagina = datosFiltrados.slice(inicio, fin);
+      actualizarContadorTotal(datosOriginales);
 
-      if (datosPagina.length === 0) {
-        cuerpoTitulares.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#718096;padding:15px;font-size:13px;">No se encontraron resultados</td></tr>`;
-        infoTabla.textContent = "Mostrando 0 a 0 de 0 registros";
-        paginacionTabla.innerHTML = "";
-        return;
-      }
-
-      datosPagina.forEach(titular => {
-        const fila = document.createElement('tr');
-        const tieneInvitados = titular.cantidad > 0;
-        fila.innerHTML = `
-          <td>${titular.nombre}</td>
-          <td style="text-align: center;"><span class="badge ${tieneInvitados ? '' : 'badge-vacio'}">${titular.cantidad}</span></td>
-          <td style="text-align: right;">
-            <div class="acciones-td">
-              <button class="btn btn-main" onclick="irAAgregarConTitular('${titular.nombre.replace(/'/g, "\\'")}')">➕ Agregar</button>
-              <button class="btn btn-info" onclick="verInvitados('${titular.nombre.replace(/'/g, "\\'")}')">👁️ Ver</button>
-            </div>
-          </td>
-        `;
-        cuerpoTitulares.appendChild(fila);
+      selectTitular.innerHTML = '<option value="">-- Seleccione un Titular --</option>';
+      datosOriginales.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t.nombre; 
+        opt.textContent = t.nombre;
+        selectTitular.appendChild(opt);
       });
 
-      infoTabla.textContent = `Mostrando ${totalRegistros === 0 ? 0 : inicio + 1} a ${fin} de ${totalRegistros} titulares (filtrado de ${datosOriginales.length} totales)`;
-      renderizarPaginacion(totalRegistros, limite);
-    }
+      // Mantiene el select bloqueado desde la carga inicial
+      selectTitular.disabled = true;
 
-    function renderizarPaginacion(total, limite) {
+      procesarYRenderizarTabla();
+      
+      cargaPrincipal.classList.add('hidden');
+      contenedorTabla.classList.remove('hidden');
+
+    } catch (error) {
+      cargaPrincipal.textContent = "Error al conectar con Google Sheets. Revisa la URL ingresada.";
+    }
+  }
+
+  function procesarYRenderizarTabla() {
+    cuerpoTitulares.innerHTML = "";
+    const totalRegistros = datosFiltrados.length;
+    
+    let limite = registrosPorPagina === -1 ? totalRegistros : registrosPorPagina;
+    let inicio = (paginaActual - 1) * limite;
+    let fin = inicio + limite;
+    if (fin > totalRegistros) fin = totalRegistros;
+    
+    const datosPagina = datosFiltrados.slice(inicio, fin);
+
+    if (datosPagina.length === 0) {
+      cuerpoTitulares.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#718096;padding:15px;font-size:13px;">No se encontraron resultados</td></tr>`;
+      infoTabla.textContent = "Mostrando 0 a 0 de 0 registros";
       paginacionTabla.innerHTML = "";
-      const paginasTotales = Math.ceil(total / limite);
-      if (paginasTotales <= 1) return;
-
-      const btnAnt = document.createElement('span');
-      btnAnt.className = `paginate_button ${paginaActual === 1 ? 'disabled' : ''}`;
-      btnAnt.textContent = "Anterior";
-      if (paginaActual > 1) {
-        btnAnt.onclick = () => { paginaActual--; procesarYRenderizarTabla(); };
-      }
-      paginacionTabla.appendChild(btnAnt);
-
-      for (let i = 1; i <= paginasTotales; i++) {
-        const btnPag = document.createElement('span');
-        btnPag.className = `paginate_button ${paginaActual === i ? 'current' : ''}`;
-        btnPag.textContent = i;
-        btnPag.onclick = () => { paginaActual = i; procesarYRenderizarTabla(); };
-        paginacionTabla.appendChild(btnPag);
-      }
-
-      const btnSig = document.createElement('span');
-      btnSig.className = `paginate_button ${paginaActual === paginasTotales ? 'disabled' : ''}`;
-      btnSig.textContent = "Siguiente";
-      if (paginaActual < paginasTotales) {
-        btnSig.onclick = () => { paginaActual++; procesarYRenderizarTabla(); };
-      }
-      paginacionTabla.appendChild(btnSig);
+      return;
     }
 
-    async function verInvitados(nombreTitular) {
-      titularActualModal = nombreTitular;
-      document.getElementById('modalTitulo').innerHTML = `Invitados de: <span style="color:#007bff; font-weight:normal;">${nombreTitular}</span>`;
-      const cuerpoModal = document.getElementById('cuerpoModal');
-      cuerpoModal.innerHTML = "Cargando registros...";
-      modalInvitados.classList.remove('hidden');
-
-      try {
-        const respuesta = await fetch(`${WEB_APP_URL}?titular=${encodeURIComponent(nombreTitular)}`);
-        const res = await respuesta.json();
-
-        if (!res.invitados || res.invitados.length === 0) {
-          cuerpoModal.innerHTML = "<p style='text-align:center;color:#718096;padding:10px;font-size:13px;'>Sin invitados registrados.</p>";
-          return;
-        }
-
-        let htmlTabla = `
-          <table style="width:100%; border-collapse:collapse;">
-            <thead>
-              <tr style="background:#f8f9fa;">
-                <th style="padding:8px; border-bottom:2px solid #cbd5e0; font-size:12px; color:#5a6c7d;">Asistente / Edad</th>
-                <th style="padding:8px; border-bottom:2px solid #cbd5e0; font-size:12px; color:#5a6c7d;">Fecha Nacimiento</th>
-                <th style="padding:8px; border-bottom:2px solid #cbd5e0; font-size:12px; color:#5a6c7d;">Restricción</th>
-                <th style="padding:8px; border-bottom:2px solid #cbd5e0; font-size:12px; color:#5a6c7d; text-align:right;">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>`;
-            
-        res.invitados.forEach(inv => {
-          let fNacimientoStr = inv.fechanacimiento || "No registrada";
-          
-          if (fNacimientoStr.includes("T")) {
-            const partesIso = fNacimientoStr.split("T")[0].split("-");
-            if(partesIso.length === 3) fNacimientoStr = `${partesIso[2]}/${partesIso[1]}/${partesIso[0]}`;
-          }
-
-          const jsonInvData = JSON.stringify(inv).replace(/'/g, "&#39;");
-
-          htmlTabla += `
-            <tr>
-              <td style="padding:8px; border-bottom:1px solid #eef2f5; font-size:13px;">
-                <strong>${inv.nombreasistente}</strong><br>
-                <small style="color:#718096">Edad: ${inv.edad} años</small>
-              </td>
-              <td style="padding:8px; border-bottom:1px solid #eef2f5; font-size:13px;"><code>${fNacimientoStr}</code></td>
-              <td style="padding:8px; border-bottom:1px solid #eef2f5; font-size:13px;">
-                ${inv.restriccionalimentaria}
-                ${inv.observaciones ? `<br><small style="color:#e53e3e">Obs: ${inv.observaciones}</small>` : ''}
-              </td>
-              <td style="padding:8px; border-bottom:1px solid #eef2f5; font-size:13px; text-align:right;">
-                <div style="display:flex; justify-content:flex-end; gap:4px;">
-                  <button class="btn btn-warning" onclick='prepararEdicion(${jsonInvData})'>✏️ Editar</button>
-                  <button class="btn btn-danger" onclick="confirmarEliminacion(${inv.numFila}, '${inv.nombreasistente.replace(/'/g, "\\'")}')">🗑️ Borrar</button>
-                </div>
-              </td>
-            </tr>`;
-        });
-        
-        htmlTabla += `</tbody></table>`;
-        cuerpoModal.innerHTML = htmlTabla;
-      } catch (e) {
-        cuerpoModal.innerHTML = "Error al obtener la lista de invitados.";
-      }
-    }
-
-    // PREPARAR EDICIÓN (MANTIENE EL TITULAR BLOQUEADO)
-    function prepararEdicion(invitado) {
-      modalInvitados.classList.add('hidden');
-      vistaPrincipal.classList.add('hidden');
-      vistaFormulario.classList.remove('hidden');
-      mensajeForm.textContent = "";
-
-      tituloFormulario.textContent = "Editar Asistente";
-      inputNumFila.value = invitado.numFila;
-      selectTitular.value = invitado.titular;
-      selectTitular.disabled = true; // Select bloqueado
-      
-      document.getElementById('nombreasistente').value = invitado.nombreasistente;
-      document.getElementById('fechanacimiento').value = invitado.fechanacimiento;
-      document.getElementById('edad').value = invitado.edad;
-      document.getElementById('restriccionalimentaria').value = invitado.restriccionalimentaria;
-      document.getElementById('observaciones').value = invitado.observaciones || "";
-    }
-
-    async function confirmarEliminacion(numFila, nombreAsistente) {
-      if (!confirm(`¿Deseas eliminar el registro de "${nombreAsistente}"?`)) return;
-
-      try {
-        const cuerpoModal = document.getElementById('cuerpoModal');
-        cuerpoModal.innerHTML = "Eliminando registro...";
-
-        await fetch(WEB_APP_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ accion: "ELIMINAR", numFila: numFila })
-        });
-
-        await verInvitados(titularActualModal);
-
-      } catch (e) {
-        alert("Error al intentar eliminar el registro.");
-      }
-    }
-
-    // ENVÍO DEL FORMULARIO
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (inputFecha.value.length < 10) { alert("Ingresa una fecha válida en formato DD/MM/YYYY"); return; }
-      
-      const btnEnviar = document.getElementById('btnEnviar');
-      btnEnviar.disabled = true;
-      mensajeForm.textContent = "Guardando cambios en Google Sheets...";
-      mensajeForm.style.color = "#2d3748";
-
-      const numFila = inputNumFila.value;
-      const esEdicion = Boolean(numFila);
-
-      const payload = {
-        accion: esEdicion ? "ACTUALIZAR" : "GUARDAR",
-        numFila: esEdicion ? parseInt(numFila, 10) : null,
-        titular: selectTitular.value,
-        nombreasistente: document.getElementById('nombreasistente').value,
-        fechanacimiento: inputFecha.value,
-        edad: parseInt(inputEdad.value, 10),
-        restriccionalimentaria: document.getElementById('restriccionalimentaria').value,
-        observaciones: document.getElementById('observaciones').value
-      };
-
-      try {
-        await fetch(WEB_APP_URL, { 
-          method: "POST", 
-          headers: { "Content-Type": "text/plain;charset=utf-8" }, 
-          body: JSON.stringify(payload) 
-        });
-        
-        mensajeForm.textContent = esEdicion ? "¡Registro actualizado correctamente!" : "¡Registro guardado con éxito!";
-        mensajeForm.style.color = "green";
-
-      } catch (error) {
-        mensajeForm.textContent = "Error al procesar los datos.";
-        mensajeForm.style.color = "red";
-      } finally {
-        btnEnviar.disabled = false;
-      }
+    datosPagina.forEach(titular => {
+      const fila = document.createElement('tr');
+      const tieneInvitados = titular.cantidad > 0;
+      fila.innerHTML = `
+        <td>${titular.nombre}</td>
+        <td style="text-align: center;"><span class="badge ${tieneInvitados ? '' : 'badge-vacio'}">${titular.cantidad}</span></td>
+        <td style="text-align: right;">
+          <div class="acciones-td">
+            <button class="btn btn-main" onclick="irAAgregarConTitular('${titular.nombre.replace(/'/g, "\\'")}')">➕ Agregar</button>
+            <button class="btn btn-info" onclick="verInvitados('${titular.nombre.replace(/'/g, "\\'")}')">👁️ Ver</button>
+          </div>
+        </td>
+      `;
+      cuerpoTitulares.appendChild(fila);
     });
 
-    window.addEventListener('DOMContentLoaded', cargarPantallaPrincipal);
-  </script>
+    infoTabla.textContent = `Mostrando ${totalRegistros === 0 ? 0 : inicio + 1} a ${fin} de ${totalRegistros} titulares (filtrado de ${datosOriginales.length} totales)`;
+    renderizarPaginacion(totalRegistros, limite);
+  }
+
+  function renderizarPaginacion(total, limite) {
+    paginacionTabla.innerHTML = "";
+    const paginasTotales = Math.ceil(total / limite);
+    if (paginasTotales <= 1) return;
+
+    const btnAnt = document.createElement('span');
+    btnAnt.className = `paginate_button ${paginaActual === 1 ? 'disabled' : ''}`;
+    btnAnt.textContent = "Anterior";
+    if (paginaActual > 1) {
+      btnAnt.onclick = () => { paginaActual--; procesarYRenderizarTabla(); };
+    }
+    paginacionTabla.appendChild(btnAnt);
+
+    for (let i = 1; i <= paginasTotales; i++) {
+      const btnPag = document.createElement('span');
+      btnPag.className = `paginate_button ${paginaActual === i ? 'current' : ''}`;
+      btnPag.textContent = i;
+      btnPag.onclick = () => { paginaActual = i; procesarYRenderizarTabla(); };
+      paginacionTabla.appendChild(btnPag);
+    }
+
+    const btnSig = document.createElement('span');
+    btnSig.className = `paginate_button ${paginaActual === paginasTotales ? 'disabled' : ''}`;
+    btnSig.textContent = "Siguiente";
+    if (paginaActual < paginasTotales) {
+      btnSig.onclick = () => { paginaActual++; procesarYRenderizarTabla(); };
+    }
+    paginacionTabla.appendChild(btnSig);
+  }
+
+  window.verInvitados = async function(nombreTitular) {
+    titularActualModal = nombreTitular;
+    document.getElementById('modalTitulo').innerHTML = `Invitados de: <span style="color:#007bff; font-weight:normal;">${nombreTitular}</span>`;
+    const cuerpoModal = document.getElementById('cuerpoModal');
+    cuerpoModal.innerHTML = "Cargando registros...";
+    modalInvitados.classList.remove('hidden');
+
+    try {
+      const respuesta = await fetch(`${WEB_APP_URL}?titular=${encodeURIComponent(nombreTitular)}`);
+      const res = await respuesta.json();
+
+      if (!res.invitados || res.invitados.length === 0) {
+        cuerpoModal.innerHTML = "<p style='text-align:center;color:#718096;padding:10px;font-size:13px;'>Sin invitados registrados.</p>";
+        return;
+      }
+
+      let htmlTabla = `
+        <table style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr style="background:#f8f9fa;">
+              <th style="padding:8px; border-bottom:2px solid #cbd5e0; font-size:12px; color:#5a6c7d;">Asistente / Edad</th>
+              <th style="padding:8px; border-bottom:2px solid #cbd5e0; font-size:12px; color:#5a6c7d;">Fecha Nacimiento</th>
+              <th style="padding:8px; border-bottom:2px solid #cbd5e0; font-size:12px; color:#5a6c7d;">Restricción</th>
+              <th style="padding:8px; border-bottom:2px solid #cbd5e0; font-size:12px; color:#5a6c7d; text-align:right;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>`;
+          
+      res.invitados.forEach(inv => {
+        let fNacimientoStr = inv.fechanacimiento || "No registrada";
+        
+        if (fNacimientoStr.includes("T")) {
+          const partesIso = fNacimientoStr.split("T")[0].split("-");
+          if(partesIso.length === 3) fNacimientoStr = `${partesIso[2]}/${partesIso[1]}/${partesIso[0]}`;
+        }
+
+        const jsonInvData = JSON.stringify(inv).replace(/'/g, "&#39;");
+
+        htmlTabla += `
+          <tr>
+            <td style="padding:8px; border-bottom:1px solid #eef2f5; font-size:13px;">
+              <strong>${inv.nombreasistente}</strong><br>
+              <small style="color:#718096">Edad: ${inv.edad} años</small>
+            </td>
+            <td style="padding:8px; border-bottom:1px solid #eef2f5; font-size:13px;"><code>${fNacimientoStr}</code></td>
+            <td style="padding:8px; border-bottom:1px solid #eef2f5; font-size:13px;">
+              ${inv.restriccionalimentaria}
+              ${inv.observaciones ? `<br><small style="color:#e53e3e">Obs: ${inv.observaciones}</small>` : ''}
+            </td>
+            <td style="padding:8px; border-bottom:1px solid #eef2f5; font-size:13px; text-align:right;">
+              <div style="display:flex; justify-content:flex-end; gap:4px;">
+                <button class="btn btn-warning" onclick='prepararEdicion(${jsonInvData})'>✏️ Editar</button>
+                <button class="btn btn-danger" onclick="confirmarEliminacion(${inv.numFila}, '${inv.nombreasistente.replace(/'/g, "\\'")}')">🗑️ Borrar</button>
+              </div>
+            </td>
+          </tr>`;
+      });
+      
+      htmlTabla += `</tbody></table>`;
+      cuerpoModal.innerHTML = htmlTabla;
+    } catch (e) {
+      cuerpoModal.innerHTML = "Error al obtener la lista de invitados.";
+    }
+  };
+
+  window.confirmarEliminacion = async function(numFila, nombreAsistente) {
+    if (!confirm(`¿Deseas eliminar el registro de "${nombreAsistente}"?`)) return;
+
+    try {
+      const cuerpoModal = document.getElementById('cuerpoModal');
+      cuerpoModal.innerHTML = "Eliminando registro...";
+
+      await fetch(WEB_APP_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ accion: "ELIMINAR", numFila: numFila })
+      });
+
+      await verInvitados(titularActualModal);
+
+    } catch (e) {
+      alert("Error al intentar eliminar el registro.");
+    }
+  };
+
+  // ENVÍO DEL FORMULARIO
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (inputFecha.value.length < 10) { alert("Ingresa una fecha válida en formato DD/MM/YYYY"); return; }
+    
+    const btnEnviar = document.getElementById('btnEnviar');
+    btnEnviar.disabled = true;
+    mensajeForm.textContent = "Guardando cambios en Google Sheets...";
+    mensajeForm.style.color = "#2d3748";
+
+    const numFila = inputNumFila.value;
+    const esEdicion = Boolean(numFila);
+
+    const payload = {
+      accion: esEdicion ? "ACTUALIZAR" : "GUARDAR",
+      numFila: esEdicion ? parseInt(numFila, 10) : null,
+      titular: selectTitular.value,
+      nombreasistente: document.getElementById('nombreasistente').value,
+      fechanacimiento: inputFecha.value,
+      edad: parseInt(inputEdad.value, 10),
+      restriccionalimentaria: document.getElementById('restriccionalimentaria').value,
+      observaciones: document.getElementById('observaciones').value
+    };
+
+    try {
+      await fetch(WEB_APP_URL, { 
+        method: "POST", 
+        headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+        body: JSON.stringify(payload) 
+      });
+      
+      mensajeForm.textContent = esEdicion ? "¡Registro actualizado correctamente!" : "¡Registro guardado con éxito!";
+      mensajeForm.style.color = "green";
+
+    } catch (error) {
+      mensajeForm.textContent = "Error al procesar los datos.";
+      mensajeForm.style.color = "red";
+    } finally {
+      btnEnviar.disabled = false;
+    }
+  });
+
+  window.addEventListener('DOMContentLoaded', cargarPantallaPrincipal);
+</script>
 </body>
 </html>
