@@ -245,7 +245,7 @@
     }
 
     // BOTÓN NUEVO: LIMPIA EL FORMULARIO MANTENIENDO EL TITULAR O PERMITIENDO CAMBIARLO
-    btnNuevo.addEventListener('click', () => {
+    /*btnNuevo.addEventListener('click', () => {
       const titularPrevio = selectTitular.value;
       form.reset();
       inputNumFila.value = "";
@@ -255,7 +255,20 @@
       tituloFormulario.textContent = "Nuevo Registro de Asistente";
       mensajeForm.textContent = "";
     });
-
+ */
+    btnNuevo.addEventListener('click', () => {
+  const titularPrevio = selectTitular.value;
+  form.reset();
+  inputNumFila.value = "";
+  
+  // Mantiene seleccionado el titular y lo deja BLOQUEADO
+  selectTitular.value = titularPrevio;
+  selectTitular.disabled = true; 
+  
+  document.getElementById('restriccionalimentaria').value = "Ninguna";
+  tituloFormulario.textContent = "Nuevo Registro de Asistente";
+  mensajeForm.textContent = "";
+});
     // BOTÓN VOLVER: RECARGA LA LISTA Y EL CONTADOR GENERAL
     document.getElementById('btnVolver').addEventListener('click', () => {
       vistaFormulario.classList.add('hidden');
