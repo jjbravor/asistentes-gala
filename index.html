@@ -91,7 +91,7 @@
   <!-- PANTALLA 1: LISTADO PRINCIPAL DE TITULARES -->
   <div id="vistaPrincipal" class="container">
     <div class="header-row">
-      <h2>Listado General de Titulares</h2>
+      <h2>Listado General de Alumnos</h2>
     </div>
 
     <!-- TARJETA CON EL CONTADOR TOTAL -->
@@ -121,13 +121,13 @@
       </div>
     </div>
     
-    <div id="cargaPrincipal" class="status-msg">Sincronizando con Google Sheets...</div>
+    <div id="cargaPrincipal" class="status-msg">Sincronizando Datos...</div>
     
     <div id="contenedorTabla" class="hidden">
       <table id="tablaTitulares" class="dataTable">
         <thead>
           <tr>
-            <th>Nombre del Titular</th>
+            <th>Nombre del Alumno</th>
             <th style="text-align: center;">Registros</th>
             <th style="text-align: right; padding-right: 25px;">Acciones</th>
           </tr>
@@ -152,7 +152,7 @@
       <input type="hidden" id="numFila" value="">
       
       <div class="form-group">
-        <label for="titular">Titular Responsable:</label>
+        <label for="titular">Nombre Alumno:</label>
         <select id="titular" required disabled></select>
       </div>
       <div class="form-group">
