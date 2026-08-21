@@ -6,6 +6,21 @@
   <title>Sistema de Gestión de Asistentes</title>
   
   <style>
+    /* Tarjeta de Resumen */
+    .card-resumen {
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+    }
+    .card-resumen .titulo-resumen { font-size: 13px; font-weight: 600; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px; }
+    .card-resumen .valor-resumen { font-size: 28px; font-weight: 800; margin-top: 2px; }
+
     /* Estilos de la tabla de datos */
     .dataTables_wrapper { position: relative; clear: both; margin: 15px 0 !important; width: 100% !important; font-size: 13px; }
     .dataTables_length { float: left; margin-bottom: 15px; }
@@ -70,6 +85,15 @@
   <div id="vistaPrincipal" class="container">
     <div class="header-row">
       <h2>Listado General de Titulares</h2>
+    </div>
+
+    <!-- TARJETA CON EL CONTADOR TOTAL -->
+    <div class="card-resumen">
+      <div>
+        <div class="titulo-resumen">Asistentes Confirmados</div>
+        <div id="totalAsistentes" class="valor-resumen">0</div>
+      </div>
+      <div style="font-size: 30px;">👥</div>
     </div>
     
     <div style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
@@ -184,6 +208,7 @@
     const form = document.getElementById('formularioRegistro');
     const mensajeForm = document.getElementById('mensajeForm');
     const tituloFormulario = document.getElementById('tituloFormulario');
+    const totalAsistentesEl = document.getElementById('totalAsistentes');
     
     const buscadorManual = document.getElementById('buscadorManual');
     const controlLimite = document.getElementById('controlLimite');
@@ -217,7 +242,6 @@
       cargarPantallaPrincipal(); 
     });
 
-    // CERRAR MODAL Y REFRESCAR TABLA
     document.getElementById('btnCerrarModal').addEventListener('click', () => {
       modalInvitados.classList.add('hidden');
       cargarPantallaPrincipal();
@@ -281,6 +305,12 @@
       inputEdad.value = edadCalculada >= 0 ? edadCalculada : "";
     }
 
+    // CALCULA Y ACTUALIZA EL TOTAL GENERAL DE ASISTENTES
+    function actualizarContadorTotal(datos) {
+      const sumaTotal = datos.reduce((acumulador, item) => acumulador + (item.cantidad || 0), 0);
+      totalAsistentesEl.textContent = sumaTotal;
+    }
+
     async function cargarPantallaPrincipal() {
       try {
         cargaPrincipal.classList.remove('hidden');
@@ -293,6 +323,8 @@
         datosOriginales = res.datos || [];
         datosFiltrados = [...datosOriginales];
         
+        actualizarContadorTotal(datosOriginales);
+
         selectTitular.innerHTML = '<option value="">-- Seleccione un Titular --</option>';
         datosOriginales.forEach(t => {
           const opt = document.createElement('option');
@@ -462,7 +494,6 @@
       document.getElementById('observaciones').value = invitado.observaciones || "";
     }
 
-    // ELIMINAR REGISTRO Y REFRESCAR TABLA EN SEGUNDO PLANO
     async function confirmarEliminacion(numFila, nombreAsistente) {
       if (!confirm(`¿Deseas eliminar el registro de "${nombreAsistente}"?`)) return;
 
@@ -476,14 +507,13 @@
           body: JSON.stringify({ accion: "ELIMINAR", numFila: numFila })
         });
 
-        // Refresca la ventana modal actual
         await verInvitados(titularActualModal);
         
-        // Refresca silenciosamente el listado principal de fondo
         fetch(WEB_APP_URL)
           .then(res => res.json())
           .then(res => {
             datosOriginales = res.datos || [];
+            actualizarContadorTotal(datosOriginales);
             const termino = buscadorManual.value.toLowerCase().trim();
             datosFiltrados = datosOriginales.filter(t => t.nombre.toLowerCase().includes(termino));
             procesarYRenderizarTabla();
